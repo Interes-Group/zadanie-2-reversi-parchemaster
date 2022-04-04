@@ -18,7 +18,7 @@ public class GameBoardPanel extends JPanel {
         allCells = new Cell[size][size];
         for (int y = 0; y < size; y++) {
             for (int x = 0; x < size; x++) {
-                var preferredSize =  new Dimension(500 / 8, 500 / 8);
+                var preferredSize =  new Dimension(500 / size, 500 / size);
                 allCells[y][x] = new Cell(y, x, preferredSize);
                 allCells[y][x].setPreferredSize(preferredSize);
                 add(allCells[y][x]);

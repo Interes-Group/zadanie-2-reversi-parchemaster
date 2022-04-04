@@ -1,12 +1,15 @@
 package sk.stuba.fei.uim.oop.boadr;
 
+import sk.stuba.fei.uim.oop.button.ActionChangeBord;
 import sk.stuba.fei.uim.oop.button.ChangeSize;
 import sk.stuba.fei.uim.oop.button.Restart;
+import sk.stuba.fei.uim.oop.gui.GameLogic;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+
 
 public class InformationPanel extends JPanel{
     private JButton restart;
@@ -16,7 +19,7 @@ public class InformationPanel extends JPanel{
 
 
 
-    public InformationPanel(int oldBoardSize, JFrame gameFrame, JPanel gamePanel) {
+    public InformationPanel(GameLogic gameLogic) {
         setLayout(new FlowLayout());
         restart = new JButton("Restart");
         changeSize = new JComboBox();
@@ -32,9 +35,25 @@ public class InformationPanel extends JPanel{
         add(new JSeparator());
         add(player2Info);
 
-        restart.addActionListener(new Restart(oldBoardSize, gameFrame, gamePanel));
-        changeSize.addActionListener(new ChangeSize(gameFrame, gamePanel, changeSize));
+//        restart.addActionListener(new Restart(gameLogic));
+//        changeSize.addActionListener(new ChangeSize(gameLogic));
+
+        restart.addActionListener(new ChangeSize(gameLogic));
+        changeSize.addActionListener(new ChangeSize(gameLogic));
+
+        changeSize.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if (e.getSource() == changeSize) {
+
+                    gameLogic.setBoardSize(Integer.parseInt(changeSize.getSelectedItem().toString().split("x")[0]));
+//                    gameLogic.setBoardSize(newSizeBoard);
+                }
+            }
+        });
     }
+
+
 
     private void setComboBox() {
         changeSize.addItem("8x8");
