@@ -1,11 +1,14 @@
 package sk.stuba.fei.uim.oop.boadr;
 
+import sk.stuba.fei.uim.oop.button.ChangeSize;
 import sk.stuba.fei.uim.oop.button.Restart;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 
-public class InformationPanel extends JPanel {
+public class InformationPanel extends JPanel{
     private JButton restart;
     private JComboBox changeSize;
     private JLabel player1Info;
@@ -30,8 +33,7 @@ public class InformationPanel extends JPanel {
         add(player2Info);
 
         restart.addActionListener(new Restart(oldBoardSize, gameFrame, gamePanel));
-//
-
+        changeSize.addActionListener(new ChangeSize(gameFrame, gamePanel, changeSize));
     }
 
     private void setComboBox() {

@@ -8,7 +8,7 @@ import java.awt.event.ActionEvent;
 public class Restart extends AbstractAction {
 
     private int oldBoardSize;
-    final private JFrame gameFrame;
+    private JFrame gameFrame;
     private JPanel gamePanel;
 
     public Restart(int oldBoardSize, JFrame gameFrame, JPanel gamePanel) {

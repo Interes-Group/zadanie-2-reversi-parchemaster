@@ -22,17 +22,11 @@ public class GameFrame {
 
         gameFrame = createFrame();
 
-
-
-        // TODO implement select size, for now it's 8
-//        var gameBoardPanel = GameLogic.createGameBoardPanel(size);
         var gameBoardPanel = new GameBoardPanel(size);
         var infoPanel = new InformationPanel(size, gameFrame, gameBoardPanel);
 
         gameFrame.add(gameBoardPanel, BorderLayout.CENTER);
         gameFrame.add(infoPanel, BorderLayout.SOUTH);
-
-//        frame.add(game);
 
 
 
