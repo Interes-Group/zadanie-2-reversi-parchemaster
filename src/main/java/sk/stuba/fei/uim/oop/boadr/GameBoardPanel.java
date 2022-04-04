@@ -5,12 +5,12 @@ import lombok.Getter;
 import javax.swing.*;
 import java.awt.*;
 
-public class GameBoard extends JPanel {
+public class GameBoardPanel extends JPanel {
 
     @Getter
     private Cell[][] allCells;
 
-    public GameBoard(int size) {
+    public GameBoardPanel(int size) {
         setLayout(new GridLayout(size, size));
 
 
@@ -24,6 +24,14 @@ public class GameBoard extends JPanel {
                 add(allCells[y][x]);
             }
         }
+        var activeToken1 = getAllCells()[(size-size/2) - 1][(size-size/2) - 1];
+        activeToken1.setBackground(Color.red);
+        var activeToken2 = getAllCells()[(size-size/2) - 1][(size-size/2)];
+        activeToken2.setBackground(Color.blue);
+        var activeToken3 = getAllCells()[(size-size/2)][(size-size/2) - 1];
+        activeToken3.setBackground(Color.green);
+        var activeToken4 = getAllCells()[(size-size/2)][(size-size/2)];
+        activeToken4.setBackground(Color.yellow);
     }
 
 //    private Cell getSpecificCell(int y, int x) {

@@ -1,40 +1,43 @@
 package sk.stuba.fei.uim.oop.gui;
 
 import lombok.Setter;
-import sk.stuba.fei.uim.oop.boadr.Information;
+import sk.stuba.fei.uim.oop.boadr.GameBoardPanel;
+import sk.stuba.fei.uim.oop.boadr.InformationPanel;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class Game {
+public class GameFrame {
 
 
-    private final JFrame frame;
+    private final JFrame gameFrame;
+
 
     @Setter
     private int size = 8;
 
 
 
-    public Game() {
+    public GameFrame() {
 
-        frame = createFrame();
+        gameFrame = createFrame();
 
 
 
         // TODO implement select size, for now it's 8
-        var gameBoardPanel = GameLogic.createGameBoardPanel(size);
-        frame.add(gameBoardPanel, BorderLayout.CENTER);
+//        var gameBoardPanel = GameLogic.createGameBoardPanel(size);
+        var gameBoardPanel = new GameBoardPanel(size);
+        var infoPanel = new InformationPanel(size, gameFrame, gameBoardPanel);
 
-        var infoPanel = new Information(size);
-        frame.add(infoPanel, BorderLayout.SOUTH);
+        gameFrame.add(gameBoardPanel, BorderLayout.CENTER);
+        gameFrame.add(infoPanel, BorderLayout.SOUTH);
 
 //        frame.add(game);
 
 
 
-        frame.pack();
-        frame.setVisible(true);
+        gameFrame.pack();
+        gameFrame.setVisible(true);
     }
 
 

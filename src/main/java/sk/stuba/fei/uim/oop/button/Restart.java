@@ -1,20 +1,27 @@
 package sk.stuba.fei.uim.oop.button;
 
-import sk.stuba.fei.uim.oop.gui.Game;
+import sk.stuba.fei.uim.oop.boadr.GameBoardPanel;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
 public class Restart extends AbstractAction {
 
-    private JPanel panel;
+    private int oldBoardSize;
+    final private JFrame gameFrame;
+    private JPanel gamePanel;
 
-    public Restart(JPanel panel) {
-        this.panel = panel;
+    public Restart(int oldBoardSize, JFrame gameFrame, JPanel gamePanel) {
+        this.oldBoardSize = oldBoardSize;
+        this.gameFrame = gameFrame;
+        this.gamePanel = gamePanel;
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        panel.repaint();
+        gameFrame.remove(gamePanel);
+        gamePanel = new GameBoardPanel(oldBoardSize);
+        gameFrame.add(gamePanel);
+        SwingUtilities.updateComponentTreeUI(gameFrame);
     }
 }
