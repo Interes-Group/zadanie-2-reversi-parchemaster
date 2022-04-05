@@ -1,40 +1,36 @@
 package sk.stuba.fei.uim.oop.gui;
 
-import lombok.Getter;
-import lombok.Setter;
-import sk.stuba.fei.uim.oop.boadr.GameBoardPanel;
-import sk.stuba.fei.uim.oop.boadr.InformationPanel;
-
 import javax.swing.*;
 import java.awt.*;
 
-public class GameFrame extends JFrame{
-
-
-//    private final JFrame gameFrame;
-
-
-
+public class GameFrame extends JFrame {
 
 
     public GameFrame() {
 
         createFrame();
 
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
+        int x = (int) ((dimension.getWidth() - getWidth()) / 4);
+        int y = (int) ((dimension.getHeight() - getHeight()) / 4);
+        setLocation(x, y);
+
         var gameLogic = new GameLogic(8);
         add(gameLogic);
 
         centreWindow(this);
+        //changes size of frame
         setResizable(true);
         pack();
         setVisible(true);
     }
 
     public static void centreWindow(Window frame) {
-        Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
-        int x = (int) ((dimension.getWidth() - frame.getWidth()) / 2);
-        int y = (int) ((dimension.getHeight() - frame.getHeight()) / 2);
-        frame.setLocation(x, y);
+//        Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
+//        int x = (int) ((dimension.getWidth() - frame.getWidth()) / 2);
+//        int y = (int) ((dimension.getHeight() - frame.getHeight()) / 2);
+//        setLocation(x, y);
     }
 
     private JFrame createFrame() {

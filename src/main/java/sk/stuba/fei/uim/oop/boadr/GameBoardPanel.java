@@ -25,14 +25,19 @@ public class GameBoardPanel extends JPanel {
             }
         }
         var activeToken1 = getAllCells()[(size-size/2) - 1][(size-size/2) - 1];
-        activeToken1.setBackground(Color.red);
+        activeToken1.setTokenColor(TokenColor.BLACK);
+
         var activeToken2 = getAllCells()[(size-size/2) - 1][(size-size/2)];
-        activeToken2.setBackground(Color.blue);
+        activeToken2.setTokenColor(TokenColor.WHITE);
+
         var activeToken3 = getAllCells()[(size-size/2)][(size-size/2) - 1];
-        activeToken3.setBackground(Color.green);
+        activeToken3.setTokenColor(TokenColor.WHITE);
+
         var activeToken4 = getAllCells()[(size-size/2)][(size-size/2)];
-        activeToken4.setBackground(Color.yellow);
+        activeToken4.setTokenColor(TokenColor.BLACK);
+
     }
+
 
 //    private Cell getSpecificCell(int y, int x) {
 //        return getSpecificCell()

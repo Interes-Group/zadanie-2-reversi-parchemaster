@@ -4,13 +4,10 @@ import sk.stuba.fei.uim.oop.boadr.GameBoardPanel;
 import sk.stuba.fei.uim.oop.gui.GameLogic;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 
-public class ChangeSize extends AbstractAction {
+public class ChangeSize implements ActionListener {
 
     private JPanel gamePanel;
     private GameLogic gameLogic;
@@ -23,22 +20,9 @@ public class ChangeSize extends AbstractAction {
     @Override
     public void actionPerformed(ActionEvent e) {
         gameLogic.remove(gamePanel);
-//        SwingUtilities.updateComponentTreeUI(gameLogic.getGameBoardPanel());
         gamePanel = new GameBoardPanel(gameLogic.getBoardSize());
         gameLogic.add(gamePanel);
-        SwingUtilities.updateComponentTreeUI(gameLogic);
+        gameLogic.revalidate();
+        gameLogic.repaint();
     }
 }
-
-
-//public class ChangeSize extends ActionChangeBoarder {
-//
-//    public ChangeSize(JComboBox changeSize, GameLogic gameLogic) {
-//        super(gameLogic, changeSize);
-//    }
-//
-//    @Override
-//    public void actionPerformed(ActionEvent e) {
-//        super.actionPerformed(e);
-//    }
-//}

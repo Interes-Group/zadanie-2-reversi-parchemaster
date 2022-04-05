@@ -1,56 +1,94 @@
 package sk.stuba.fei.uim.oop.boadr;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.ArrayList;
+
+import static sk.stuba.fei.uim.oop.boadr.TokenColor.NOT_SPECIFIED;
 
 public class Cell extends JPanel implements MouseListener {
 
     private Dimension preferredSize;
 
-    private Border redBorder = BorderFactory.createLineBorder(Color.RED,5);
+    private Border highlightedBorder = BorderFactory.createLineBorder(Color.cyan,2);
     private Border blackBorder = BorderFactory.createLineBorder(Color.BLACK);
     private int positionX;
     private int positionY;
     private Color cellColor;
     private Color selectedColor;
-    private boolean isEmpty;
+    @Getter
+    private Color highlightedColor = Color.red;
+//    private boolean isEmpty;
+    @Getter
+    @Setter
     private boolean isHighlighted;
+    @Getter
+    @Setter
+    private boolean isPossibleToPaint;
+
+    @Getter
+    @Setter
+    private TokenColor tokenColor;
+
 
     public Cell(int y, int x, Dimension preferredSize) {
 //        cellColor = (x + y) % 2 == 0 ? Color.GRAY : Color.DARK_GRAY;
         this.preferredSize = preferredSize;
+        this.positionX = x;
+        this.positionY = y;
         setBackground(Color.gray);
         setBorder(blackBorder);
         addMouseListener(this);
         setFocusable(true);
+        isPossibleToPaint = false;
+        tokenColor = NOT_SPECIFIED;
+
     }
 
     @Override
     public void mouseClicked(MouseEvent e) {
-//        var newPoint
-//        points.add(new Point(e.getX(), e.getY()));
-        setBackground(Color.black);
-
-//        add()
-//        repaint();
-
+//        setHighlighted(true);
+        if (isHighlighted()) {
+            isPossibleToPaint = true;
+        }
     }
+
+//    public void paint(Graphics g){
 //
+//        Graphics2D g2d = (Graphics2D) g.create();
+//        if (isHighlighted) {
+//            g2d.setColor(Color.yellow);
+//            g2d.setStroke(new BasicStroke(4));
+//            g2d.drawRect(0, 0, getWidth(), getHeight());
+//        }
+//    }
+
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        Graphics2D g2 = (Graphics2D) g;
-//        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-//        g2.setColor(Color.red);
-        g.setColor(Color.BLACK);
-        g.fillOval(5+2 * 60, 5+2 * 60, 50, 50);
-
-
-
+//        g.setColor(Color.yellow);
+//        g.fillOval(0, 0, 20, 20);
+//
+        Graphics2D g2d = (Graphics2D) g.create();
+        if (getTokenColor() == TokenColor.BLACK) {
+            g2d.setColor(Color.black);
+            g2d.fillOval(preferredSize.height/4 ,preferredSize.width/4, (int)((double)getSize().width/1.8), (int)((double)getSize().width/1.8));
+        }
+        if (getTokenColor() == TokenColor.WHITE) {
+            g2d.setColor(Color.white);
+            g2d.fillOval(preferredSize.height/4 ,preferredSize.width/4, (int)((double)getSize().width/1.8), (int)((double)getSize().width/1.8));
+        }
+//        if (isHighlighted) {
+//            g2d.setColor(Color.yellow);
+//            g2d.fillOval(preferredSize.height/4 ,preferredSize.width/4, (int)((double)getSize().width/1.8), (int)((double)getSize().width/1.8));
+////            g2d.setStroke(new BasicStroke(4));
+////            g2d.drawRect(0, 0, getWidth(), getHeight());
+//        }
 
     }
 
@@ -66,11 +104,15 @@ public class Cell extends JPanel implements MouseListener {
 
     @Override
     public void mouseEntered(MouseEvent e) {
-        setBorder(redBorder);
+//        setBorder(highlightedBorder);
+        if (isHighlighted) {
+            setBorder(highlightedBorder);
+        }
     }
 
     @Override
     public void mouseExited(MouseEvent e) {
         setBorder(blackBorder);
     }
+
 }

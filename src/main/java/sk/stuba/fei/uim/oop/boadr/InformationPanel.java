@@ -1,8 +1,6 @@
 package sk.stuba.fei.uim.oop.boadr;
 
-import sk.stuba.fei.uim.oop.button.ActionChangeBord;
 import sk.stuba.fei.uim.oop.button.ChangeSize;
-import sk.stuba.fei.uim.oop.button.Restart;
 import sk.stuba.fei.uim.oop.gui.GameLogic;
 
 import javax.swing.*;
@@ -35,10 +33,9 @@ public class InformationPanel extends JPanel{
         add(new JSeparator());
         add(player2Info);
 
-//        restart.addActionListener(new Restart(gameLogic));
-//        changeSize.addActionListener(new ChangeSize(gameLogic));
 
-        restart.addActionListener(new ChangeSize(gameLogic));
+        // TODO doesn't work for restart
+//        restart.addActionListener(new ChangeSize(gameLogic));
         changeSize.addActionListener(new ChangeSize(gameLogic));
 
         changeSize.addItemListener(new ItemListener() {
