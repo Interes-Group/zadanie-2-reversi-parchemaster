@@ -50,7 +50,7 @@ public class GameLogic extends JPanel {
 
     @Getter
     @Setter
-    private ArrayList<Dictionary<Cell, ArrayList<Cell>>> possibleWaysToMove;
+    private ArrayList<HashMap<Cell, ArrayList<Cell>>> possibleWaysToMove;
 
 
 
@@ -141,13 +141,33 @@ public class GameLogic extends JPanel {
             }
 
             possibleWaysForCurrentToken.put(currentPlayerToken, listOfPossibleOpponentTokens);
+            possibleWaysToMove.add(possibleWaysForCurrentToken);
         }
     }
 
     // ArrayList<HashMap<Cell, ArrayList<Cell>>> possibleWaysToMove;
 
-    private void checkTheLastOpponentToken() {
-//        possibleWaysToMove.stream().forEach(currentPlayerToken -> currentPlayerToken.ge);
+    private void checkTheLastOpponentToken(Player currentPlayer, Player opponentPlayer) {
+//        for (var currentPlayerToken : currentPlayer.getPlayerTokens()) {
+////            var aa = possibleWaysToMove.stream().forEach(dictionary -> dictionary.get(currentPlayerToken).stream().filter(cell -> cell.getPositionY() == 1 && cell.getPositionX() == 1));
+//        }
+
+//        }
+        for (var currentPlayerTokenAndListOfOpponentTokens : possibleWaysToMove) {
+            var currentPlayerTokens = currentPlayerTokenAndListOfOpponentTokens.keySet();
+            // cell of current player
+            for (var currentToken : currentPlayerTokens) {
+                // the closest tokens of opponent player
+//                for (var opponentToken : currentPlayerTokenAndListOfOpponentTokens.get(currentToken)) {
+//
+//                }
+                for (var listOfClosestOpponentsTokens : currentPlayerTokenAndListOfOpponentTokens.values()) {
+                    for (var opponentToken : listOfClosestOpponentsTokens) {
+                        // TODO implement logic of checking what is after the opponent token
+                    }
+                }
+            }
+        }
     }
 
     private void findCurrentPlayerToken(Player currentPlayer) {
