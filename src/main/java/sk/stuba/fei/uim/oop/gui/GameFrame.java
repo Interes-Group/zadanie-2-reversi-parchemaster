@@ -2,8 +2,12 @@ package sk.stuba.fei.uim.oop.gui;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 public class GameFrame extends JFrame {
+
+    private GameLogic gameLogic;
 
 
     public GameFrame() {
@@ -16,7 +20,8 @@ public class GameFrame extends JFrame {
         int y = (int) ((dimension.getHeight() - getHeight()) / 4);
         setLocation(x, y);
 
-        var gameLogic = new GameLogic(8);
+
+        this.gameLogic = new GameLogic(8);
         add(gameLogic);
 
         centreWindow(this);

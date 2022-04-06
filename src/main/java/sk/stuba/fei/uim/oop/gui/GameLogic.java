@@ -10,8 +10,16 @@ import sk.stuba.fei.uim.oop.player.Player;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.util.ArrayList;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
-public class GameLogic extends JPanel{
+public class GameLogic extends JPanel {
 
 //    private GameBoard board;
 
@@ -29,6 +37,14 @@ public class GameLogic extends JPanel{
     private int round;
     private Player player1;
     private Player player2;
+
+    @Getter
+    @Setter
+    private ArrayList<Cell> possibleCells = new ArrayList<>();
+
+    @Getter
+    @Setter
+    private boolean isNewRound;
 
 
     private Cell[][] allCells;
@@ -48,47 +64,81 @@ public class GameLogic extends JPanel{
         add(informationPanel, BorderLayout.SOUTH);
 
         //WHITE
-        this.player1 = new Player(allCells, 2, TokenColor.WHITE);
+        this.player1 = new Player(new ArrayList<Cell>(), 2, TokenColor.WHITE);
         //BLACK
-        this.player2 = new Player(allCells, 2, TokenColor.BLACK);
+        this.player2 = new Player(new ArrayList<Cell>(), 2, TokenColor.BLACK);
 
-        start();
+
+//        start();
+
+        ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
+        executor.scheduleAtFixedRate(helloRunnable, 0, 3, TimeUnit.SECONDS);
     }
 
-    private void start() {
+    Runnable helloRunnable = new Runnable() {
+        public void run() {
+
+            start();
+        }
+    };
+
+
+
+    public void start() {
         var currentPlayer = round % 2 == 1 ? player1 : player2;
-
-
-//        for (var cell : currentPlayer.getPlayerCells()) {
-//            if ()
-//        }
-        var cells = currentPlayer.getPlayerCells();
-//        for (int i = 0; i < cells.length; i++) {
-//            for (int j = 0; j < cells.length; j++) {
-//                if (cells[i][j].getTokenColor() != null) {
-//                    if (cells[i][j].getTokenColor() == currentPlayer.getPlayerColor()) {
-//                        findTheClosestOppositeToken(i, j, allCells[i][j].getTokenColor());
-//                    }
-//                }
-//            }
-//        }
+        var opponentPlayer = round % 2 == 0 ? player1 : player2;
         findCurrentPlayerToken(currentPlayer);
+        isNewRound = false;
     }
 
+
+
+    private void findPlayersTokens(Player currentPlayer, Player opponentPlayer) {
+        for (int y = 0; y < allCells.length; y++) {
+            for (int x = 0; x < allCells.length; x++) {
+                if (allCells[y][x].getTokenColor() == currentPlayer.getPlayerColor()) {
+                    currentPlayer.getPlayerTokens().add(allCells[y][x]);
+                }
+                if (allCells[y][x].getTokenColor() != currentPlayer.getPlayerColor()
+                        && allCells[y][x].getTokenColor() != TokenColor.NOT_SPECIFIED) {
+                    opponentPlayer.getPlayerTokens().add(allCells[y][x]);
+                }
+            }
+        }
+    }
+
+    private void findMatchCellsForPossibleToken(Player currentPlayer, Player opponentPlayer) {
+        for (var currentPlayerToken : currentPlayer.getPlayerTokens()) {
+            for (var opponentPlayerToken : opponentPlayer.getPlayerTokens()) {
+                if ((currentPlayerToken.getPositionY() == opponentPlayerToken.getPositionY() - 1
+                        || currentPlayerToken.getPositionY() == opponentPlayerToken.getPositionY() + 1
+                        || currentPlayerToken.getPositionY() == opponentPlayerToken.getPositionY())
+                        && (currentPlayerToken.getPositionX() == opponentPlayerToken.getPositionX() - 1
+                        || currentPlayerToken.getPositionX() == opponentPlayerToken.getPositionX() + 1
+                        || currentPlayerToken.getPositionX() == opponentPlayerToken.getPositionX())) {
+                    // TODO looking for matches between White and Black tokens (Continue there (не учел диагонали))
+                    // TODO 1) сделать список вариантов аттаки для каждого токена текущего игрока (например токен 4,4 может атаковать 3,4 и 4,3)
+                    // TODO 2) пройти в цикле через каждую возможную атаку у узнать можно ли в следствии атаки захватить токен(токены) противоположного цвета
+                    // TODO 3) когда мы поставили токен на выбранную нами кетку из списка предыдущего шага, мы должны проверить по всем направления если можно захватить токены противника.
+                }
+            }
+        }
+    }
+//if ((origTokenY == y - 1 || origTokenY == y + 1 || origTokenY == y)
+//                        && (origTokenX == x - 1 || origTokenX == x + 1 || origTokenX == x)
+//                        && !(allCells[y][x].getTokenColor().equals(TokenColor.NOT_SPECIFIED))) {
     private void findCurrentPlayerToken(Player currentPlayer) {
         for (int y = 0; y < allCells.length; y++) {
             for (int x = 0; x < allCells.length; x++) {
                 if (allCells[y][x].getTokenColor() == currentPlayer.getPlayerColor()) {
                     findTheClosestOppositeToken(y, x, allCells[y][x].getTokenColor());
                 }
+                if (isNewRound) return;
             }
         }
     }
 
     private TokenColor getOppositeTokenColor(TokenColor originColor) {
-//        if (originColor.equals(TokenColor.NOT_SPECIFIED)) {
-//            return TokenColor.NOT_SPECIFIED;
-//        }
         return originColor.equals(TokenColor.BLACK) ? TokenColor.WHITE : TokenColor.BLACK;
     }
 
@@ -100,39 +150,63 @@ public class GameLogic extends JPanel{
                         && !(allCells[y][x].getTokenColor().equals(TokenColor.NOT_SPECIFIED))) {
                     findTheClosestFreeToken(origTokenY, origTokenX, origTokenColor, y, x, allCells[y][x].getTokenColor());
                 }
+                if (isNewRound){
+                    return;
+                }
             }
         }
     }
 
-    private void findTheClosestFreeToken(int origTokenY, int origTokenX, TokenColor origTokenColor, int possibleTokenI, int possibleTokenJ, TokenColor possibleTokenColor) {
-        for (int Y = 0; Y < allCells.length; Y++) {
-            for (int X = 0; X < allCells.length; X++) {
-                //check top
-                if (origTokenX == possibleTokenJ && possibleTokenJ == X
-                        && origTokenY == possibleTokenI + 1 && possibleTokenI == Y + 1) {
-                    allCells[Y][X].setHighlighted(true);
-                    //TODO continue there
-//                    allCells[i][j].setTokenColor(origTokenColor);
-                }
-                //check bottom
-                if (origTokenX == possibleTokenJ && possibleTokenJ == X
-                        && origTokenY == possibleTokenI - 1 && possibleTokenI == Y - 1) {
-                    allCells[Y][X].setHighlighted(true);
-//                    allCells[i][j].setTokenColor(origTokenColor);
-                }
-                // check right
-                if (origTokenY == possibleTokenI && possibleTokenI == Y
-                        && origTokenX == possibleTokenJ - 1 && possibleTokenJ == X - 1) {
-                    allCells[Y][X].setHighlighted(true);
-//                    allCells[i][j].setTokenColor(origTokenColor);
-                }
-                // check left
-                if (origTokenY == possibleTokenI && possibleTokenI == Y
-                        && origTokenX == possibleTokenJ + 1 && possibleTokenJ == X + 1) {
-                    allCells[Y][X].setHighlighted(true);
-//                    allCells[i][j].setTokenColor(origTokenColor);
+    private void findTheClosestFreeToken(int origTokenY, int origTokenX, TokenColor origTokenColor, int possibleTokenY, int possibleTokenX, TokenColor possibleTokenColor) {
+        for (int y = 0; y < allCells.length; y++) {
+            for (int x = 0; x < allCells.length; x++) {
+                if (!possibleCells.contains(allCells[y][x])) {
+                    //check top
+                    if (origTokenX == possibleTokenX && possibleTokenX == x
+                            && origTokenY == possibleTokenY + 1 && possibleTokenY == y + 1) {
+                        allCells[y][x].setHighlighted(true);
+                        allCells[y][x].setPossibleTokenColor(origTokenColor);
+                        possibleCells.add(allCells[y][x]);
+                        break;
+                    }
+                    //check bottom
+                    if (origTokenX == possibleTokenX && possibleTokenX == x
+                            && origTokenY == possibleTokenY - 1 && possibleTokenY == y - 1) {
+                        allCells[y][x].setHighlighted(true);
+                        allCells[y][x].setPossibleTokenColor(origTokenColor);
+                        possibleCells.add(allCells[y][x]);
+                        break;
+                    }
+                    // check right
+                    if (origTokenY == possibleTokenY && possibleTokenY == y
+                            && origTokenX == possibleTokenX - 1 && possibleTokenX == x - 1) {
+                        allCells[y][x].setHighlighted(true);
+                        allCells[y][x].setPossibleTokenColor(origTokenColor);
+                        possibleCells.add(allCells[y][x]);
+                        break;
+                    }
+                    // check left
+                    if (origTokenY == possibleTokenY && possibleTokenY == y
+                            && origTokenX == possibleTokenX + 1 && possibleTokenX == x + 1) {
+                        allCells[y][x].setHighlighted(true);
+                        allCells[y][x].setPossibleTokenColor(origTokenColor);
+                        possibleCells.add(allCells[y][x]);
+                        break;
+                    }
+                    if (possibleCells.stream().anyMatch(cell -> cell.isClicked())) {
+                        round++;
+                        isNewRound = true;
+                        possibleCells.stream().forEach(cell -> cell.setHighlighted(false));
+                        possibleCells.removeAll(possibleCells);
+                        return;
+                    }
                 }
             }
         }
     }
+
+//    private void removeOldPossibleTokens() {
+//        possibleCells.removeAll(possibleCells);
+//    }
+
 }

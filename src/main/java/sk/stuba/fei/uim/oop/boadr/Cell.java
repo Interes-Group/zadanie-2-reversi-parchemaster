@@ -17,7 +17,11 @@ public class Cell extends JPanel implements MouseListener {
 
     private Border highlightedBorder = BorderFactory.createLineBorder(Color.cyan,2);
     private Border blackBorder = BorderFactory.createLineBorder(Color.BLACK);
+    @Getter
+    @Setter
     private int positionX;
+    @Getter
+    @Setter
     private int positionY;
     private Color cellColor;
     private Color selectedColor;
@@ -35,6 +39,14 @@ public class Cell extends JPanel implements MouseListener {
     @Setter
     private TokenColor tokenColor;
 
+    @Getter
+    @Setter
+    private TokenColor possibleTokenColor = NOT_SPECIFIED;
+
+
+    @Getter
+    @Setter
+    private boolean isClicked = false;
 
     public Cell(int y, int x, Dimension preferredSize) {
 //        cellColor = (x + y) % 2 == 0 ? Color.GRAY : Color.DARK_GRAY;
@@ -55,6 +67,8 @@ public class Cell extends JPanel implements MouseListener {
 //        setHighlighted(true);
         if (isHighlighted()) {
             isPossibleToPaint = true;
+            isClicked = true;
+            tokenColor = getPossibleTokenColor();
         }
     }
 
@@ -81,6 +95,10 @@ public class Cell extends JPanel implements MouseListener {
         }
         if (getTokenColor() == TokenColor.WHITE) {
             g2d.setColor(Color.white);
+            g2d.fillOval(preferredSize.height/4 ,preferredSize.width/4, (int)((double)getSize().width/1.8), (int)((double)getSize().width/1.8));
+        }
+        if (isHighlighted && isClicked && !tokenColor.equals(NOT_SPECIFIED)) {
+            g2d.setColor(tokenColor.equals(TokenColor.BLACK) ? Color.black : Color.white);
             g2d.fillOval(preferredSize.height/4 ,preferredSize.width/4, (int)((double)getSize().width/1.8), (int)((double)getSize().width/1.8));
         }
 //        if (isHighlighted) {
@@ -113,6 +131,9 @@ public class Cell extends JPanel implements MouseListener {
     @Override
     public void mouseExited(MouseEvent e) {
         setBorder(blackBorder);
+        if (!isClicked) {
+            tokenColor = NOT_SPECIFIED;
+        }
     }
 
 }
