@@ -6,6 +6,7 @@ import sk.stuba.fei.uim.oop.boadr.Cell;
 import sk.stuba.fei.uim.oop.boadr.GameBoardPanel;
 import sk.stuba.fei.uim.oop.boadr.InformationPanel;
 import sk.stuba.fei.uim.oop.boadr.TokenColor;
+import sk.stuba.fei.uim.oop.controls.Tuple;
 import sk.stuba.fei.uim.oop.player.Player;
 
 import javax.swing.*;
@@ -14,7 +15,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.ArrayList;
+import java.security.KeyPair;
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -46,6 +48,11 @@ public class GameLogic extends JPanel {
     @Setter
     private boolean isNewRound;
 
+    @Getter
+    @Setter
+    private ArrayList<Dictionary<Cell, ArrayList<Cell>>> possibleWaysToMove;
+
+
 
     private Cell[][] allCells;
 
@@ -71,16 +78,21 @@ public class GameLogic extends JPanel {
 
 //        start();
 
-        ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
-        executor.scheduleAtFixedRate(helloRunnable, 0, 3, TimeUnit.SECONDS);
+//        ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
+//        executor.scheduleAtFixedRate(helloRunnable, 0, 3, TimeUnit.SECONDS);
+
+
+
+
+
     }
 
-    Runnable helloRunnable = new Runnable() {
-        public void run() {
-
-            start();
-        }
-    };
+//    Runnable helloRunnable = new Runnable() {
+//        public void run() {
+//
+//            start();
+//        }
+//    };
 
 
 
@@ -107,8 +119,11 @@ public class GameLogic extends JPanel {
         }
     }
 
-    private void findMatchCellsForPossibleToken(Player currentPlayer, Player opponentPlayer) {
+    private void findTheClosestCellsNearToCurrentPlayer(Player currentPlayer, Player opponentPlayer) {
         for (var currentPlayerToken : currentPlayer.getPlayerTokens()) {
+            var possibleWaysForCurrentToken = new HashMap<Cell, ArrayList<Cell>>();
+            var listOfPossibleOpponentTokens = new ArrayList<Cell>();
+
             for (var opponentPlayerToken : opponentPlayer.getPlayerTokens()) {
                 if ((currentPlayerToken.getPositionY() == opponentPlayerToken.getPositionY() - 1
                         || currentPlayerToken.getPositionY() == opponentPlayerToken.getPositionY() + 1
@@ -120,13 +135,21 @@ public class GameLogic extends JPanel {
                     // TODO 1) сделать список вариантов аттаки для каждого токена текущего игрока (например токен 4,4 может атаковать 3,4 и 4,3)
                     // TODO 2) пройти в цикле через каждую возможную атаку у узнать можно ли в следствии атаки захватить токен(токены) противоположного цвета
                     // TODO 3) когда мы поставили токен на выбранную нами кетку из списка предыдущего шага, мы должны проверить по всем направления если можно захватить токены противника.
+
+                    listOfPossibleOpponentTokens.add(opponentPlayerToken);
                 }
             }
+
+            possibleWaysForCurrentToken.put(currentPlayerToken, listOfPossibleOpponentTokens);
         }
     }
-//if ((origTokenY == y - 1 || origTokenY == y + 1 || origTokenY == y)
-//                        && (origTokenX == x - 1 || origTokenX == x + 1 || origTokenX == x)
-//                        && !(allCells[y][x].getTokenColor().equals(TokenColor.NOT_SPECIFIED))) {
+
+    // ArrayList<HashMap<Cell, ArrayList<Cell>>> possibleWaysToMove;
+
+    private void checkTheLastOpponentToken() {
+//        possibleWaysToMove.stream().forEach(currentPlayerToken -> currentPlayerToken.ge);
+    }
+
     private void findCurrentPlayerToken(Player currentPlayer) {
         for (int y = 0; y < allCells.length; y++) {
             for (int x = 0; x < allCells.length; x++) {
