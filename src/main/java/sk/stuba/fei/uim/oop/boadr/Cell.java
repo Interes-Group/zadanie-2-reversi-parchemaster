@@ -2,6 +2,7 @@ package sk.stuba.fei.uim.oop.boadr;
 
 import lombok.Getter;
 import lombok.Setter;
+import sk.stuba.fei.uim.oop.controls.CellHandler;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -64,8 +65,9 @@ public class Cell extends JPanel implements MouseListener {
 
     @Override
     public void mouseClicked(MouseEvent e) {
-//        setHighlighted(true);
+        setHighlighted(true);
         if (isHighlighted()) {
+//            isHighlighted = false;
             isPossibleToPaint = true;
             isClicked = true;
             tokenColor = getPossibleTokenColor();
@@ -97,10 +99,11 @@ public class Cell extends JPanel implements MouseListener {
             g2d.setColor(Color.white);
             g2d.fillOval(preferredSize.height/4 ,preferredSize.width/4, (int)((double)getSize().width/1.8), (int)((double)getSize().width/1.8));
         }
-        if (isHighlighted && isClicked && !tokenColor.equals(NOT_SPECIFIED)) {
-            g2d.setColor(tokenColor.equals(TokenColor.BLACK) ? Color.black : Color.white);
-            g2d.fillOval(preferredSize.height/4 ,preferredSize.width/4, (int)((double)getSize().width/1.8), (int)((double)getSize().width/1.8));
-        }
+//        if (isHighlighted && isClicked && !tokenColor.equals(NOT_SPECIFIED)) {
+////            var selectedColor =
+//            g2d.setColor(tokenColor.equals(TokenColor.BLACK) ? Color.black : Color.white);
+//            g2d.fillOval(preferredSize.height/4 ,preferredSize.width/4, (int)((double)getSize().width/1.8), (int)((double)getSize().width/1.8));
+//        }
 //        if (isHighlighted) {
 //            g2d.setColor(Color.yellow);
 //            g2d.fillOval(preferredSize.height/4 ,preferredSize.width/4, (int)((double)getSize().width/1.8), (int)((double)getSize().width/1.8));

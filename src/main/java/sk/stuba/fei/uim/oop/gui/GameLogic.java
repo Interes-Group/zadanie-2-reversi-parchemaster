@@ -6,16 +6,11 @@ import sk.stuba.fei.uim.oop.boadr.Cell;
 import sk.stuba.fei.uim.oop.boadr.GameBoardPanel;
 import sk.stuba.fei.uim.oop.boadr.InformationPanel;
 import sk.stuba.fei.uim.oop.boadr.TokenColor;
-import sk.stuba.fei.uim.oop.controls.Tuple;
+import sk.stuba.fei.uim.oop.controls.Move;
 import sk.stuba.fei.uim.oop.player.Player;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.security.KeyPair;
 import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -76,30 +71,41 @@ public class GameLogic extends JPanel {
         this.player2 = new Player(new ArrayList<Cell>(), 2, TokenColor.BLACK);
 
 
-//        start();
+        start();
 
-//        ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
-//        executor.scheduleAtFixedRate(helloRunnable, 0, 3, TimeUnit.SECONDS);
-
-
-
+        ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
+        executor.scheduleAtFixedRate(helloRunnable, 0, 3, TimeUnit.SECONDS);
 
 
     }
 
-//    Runnable helloRunnable = new Runnable() {
-//        public void run() {
-//
-//            start();
-//        }
-//    };
+    Runnable helloRunnable = new Runnable() {
+        public void run() {
+            checkIsClicked();
+        }
+    };
 
+
+    private void checkIsClicked() {
+        if (possibleCells.stream().anyMatch(cell -> cell.isClicked())) {
+            var newToken = possibleCells.stream().filter(cell -> cell.isClicked()).findFirst().get();
+            round ++;
+            removeHighlightedCells();
+            possibleCells.clear();
+//            possibleCells.removeAll(possibleCells);
+            start();
+        }
+    }
 
 
     public void start() {
         var currentPlayer = round % 2 == 1 ? player1 : player2;
         var opponentPlayer = round % 2 == 0 ? player1 : player2;
-        findCurrentPlayerToken(currentPlayer);
+//        findCurrentPlayerToken(currentPlayer);
+        findPlayersTokens(currentPlayer, opponentPlayer);
+        findTheClosestCellsNearToCurrentPlayer(currentPlayer, opponentPlayer);
+        setHighlightedCells(currentPlayer);
+
         isNewRound = false;
     }
 
@@ -108,11 +114,12 @@ public class GameLogic extends JPanel {
     private void findPlayersTokens(Player currentPlayer, Player opponentPlayer) {
         for (int y = 0; y < allCells.length; y++) {
             for (int x = 0; x < allCells.length; x++) {
-                if (allCells[y][x].getTokenColor() == currentPlayer.getPlayerColor()) {
+                if (allCells[y][x].getTokenColor() == currentPlayer.getPlayerColor()
+                        && !currentPlayer.getPlayerTokens().contains(allCells[y][x])) {
                     currentPlayer.getPlayerTokens().add(allCells[y][x]);
                 }
-                if (allCells[y][x].getTokenColor() != currentPlayer.getPlayerColor()
-                        && allCells[y][x].getTokenColor() != TokenColor.NOT_SPECIFIED) {
+                if (allCells[y][x].getTokenColor() == opponentPlayer.getPlayerColor()
+                        && !opponentPlayer.getPlayerTokens().contains(allCells[y][x])) {
                     opponentPlayer.getPlayerTokens().add(allCells[y][x]);
                 }
             }
@@ -121,54 +128,209 @@ public class GameLogic extends JPanel {
 
     private void findTheClosestCellsNearToCurrentPlayer(Player currentPlayer, Player opponentPlayer) {
         for (var currentPlayerToken : currentPlayer.getPlayerTokens()) {
-            var possibleWaysForCurrentToken = new HashMap<Cell, ArrayList<Cell>>();
-            var listOfPossibleOpponentTokens = new ArrayList<Cell>();
-
-            for (var opponentPlayerToken : opponentPlayer.getPlayerTokens()) {
-                if ((currentPlayerToken.getPositionY() == opponentPlayerToken.getPositionY() - 1
-                        || currentPlayerToken.getPositionY() == opponentPlayerToken.getPositionY() + 1
-                        || currentPlayerToken.getPositionY() == opponentPlayerToken.getPositionY())
-                        && (currentPlayerToken.getPositionX() == opponentPlayerToken.getPositionX() - 1
-                        || currentPlayerToken.getPositionX() == opponentPlayerToken.getPositionX() + 1
-                        || currentPlayerToken.getPositionX() == opponentPlayerToken.getPositionX())) {
-                    // TODO looking for matches between White and Black tokens (Continue there (не учел диагонали))
-                    // TODO 1) сделать список вариантов аттаки для каждого токена текущего игрока (например токен 4,4 может атаковать 3,4 и 4,3)
-                    // TODO 2) пройти в цикле через каждую возможную атаку у узнать можно ли в следствии атаки захватить токен(токены) противоположного цвета
-                    // TODO 3) когда мы поставили токен на выбранную нами кетку из списка предыдущего шага, мы должны проверить по всем направления если можно захватить токены противника.
-
-                    listOfPossibleOpponentTokens.add(opponentPlayerToken);
-                }
-            }
-
-            possibleWaysForCurrentToken.put(currentPlayerToken, listOfPossibleOpponentTokens);
-            possibleWaysToMove.add(possibleWaysForCurrentToken);
+            //make own functio
+//            var listOfMoves = new ArrayList<Move>();
+//            for (var opponentPlayerToken : opponentPlayer.getPlayerTokens()) {
+//                // north
+//                if (currentPlayerToken.getPositionX() == opponentPlayerToken.getPositionX()
+//                        && currentPlayerToken.getPositionY() == opponentPlayerToken.getPositionY() + 1) {
+//                    listOfMoves.add(Move.NORTH);
+//                }
+//                // north east
+//                if (currentPlayerToken.getPositionY() == opponentPlayerToken.getPositionY() + 1
+//                        && currentPlayerToken.getPositionX() == opponentPlayerToken.getPositionX() - 1) {
+//                    listOfMoves.add(Move.NORTH_EAST);
+//                }
+//                if (currentPlayerToken.getPositionY() == opponentPlayerToken.getPositionY()
+//                        && currentPlayerToken.getPositionX() == opponentPlayerToken.getPositionX() - 1) {
+//                    listOfMoves.add(Move.EAST);
+//                }
+//                if (currentPlayerToken.getPositionY() == opponentPlayerToken.getPositionY() - 1
+//                        && currentPlayerToken.getPositionX() == opponentPlayerToken.getPositionX() - 1) {
+//                    listOfMoves.add(Move.SOUTH_EAST);
+//                }
+//                if (currentPlayerToken.getPositionY() == opponentPlayerToken.getPositionY() - 1
+//                        && currentPlayerToken.getPositionX() == opponentPlayerToken.getPositionX()) {
+//                    listOfMoves.add(Move.SOUTH);
+//                }
+//                if (currentPlayerToken.getPositionY() == opponentPlayerToken.getPositionY() - 1
+//                        && currentPlayerToken.getPositionX() == opponentPlayerToken.getPositionX() + 1) {
+//                    listOfMoves.add(Move.SOUTH_WEST);
+//                }
+//                if (currentPlayerToken.getPositionY() == opponentPlayerToken.getPositionY()
+//                        && currentPlayerToken.getPositionX() == opponentPlayerToken.getPositionX() + 1) {
+//                    listOfMoves.add(Move.WEST);
+//                }
+//                if (currentPlayerToken.getPositionY() == opponentPlayerToken.getPositionY() + 1
+//                        && currentPlayerToken.getPositionX() == opponentPlayerToken.getPositionX() + 1) {
+//                    listOfMoves.add(Move.NORTH_WEST);
+//                }
+//            }
+            // end of own function
+            var listOfMoves = findListOfMoves(opponentPlayer, currentPlayerToken);
+            findTheEndOfWayForSpecificToken(listOfMoves, currentPlayerToken);
+//            wayFromCurrentToken.put(currentPlayerToken, listOfMoves);
+//
+//            possibleWaysForCurrentToken.put(currentPlayerToken, listOfPossibleOpponentTokens);
+//            possibleWaysToMove.add(possibleWaysForCurrentToken);
         }
     }
 
-    // ArrayList<HashMap<Cell, ArrayList<Cell>>> possibleWaysToMove;
+    private ArrayList<Move> findListOfMoves(Player opponent, Cell currentPlayerToken) {
+        var listOfMoves = new ArrayList<Move>();
+        for (var opponentPlayerToken : opponent.getPlayerTokens()) {
+            // north
+            if (currentPlayerToken.getPositionX() == opponentPlayerToken.getPositionX()
+                    && currentPlayerToken.getPositionY() == opponentPlayerToken.getPositionY() + 1) {
+                listOfMoves.add(Move.NORTH);
+            }
+            // north east
+            if (currentPlayerToken.getPositionY() == opponentPlayerToken.getPositionY() + 1
+                    && currentPlayerToken.getPositionX() == opponentPlayerToken.getPositionX() - 1) {
+                listOfMoves.add(Move.NORTH_EAST);
+            }
+            if (currentPlayerToken.getPositionY() == opponentPlayerToken.getPositionY()
+                    && currentPlayerToken.getPositionX() == opponentPlayerToken.getPositionX() - 1) {
+                listOfMoves.add(Move.EAST);
+            }
+            if (currentPlayerToken.getPositionY() == opponentPlayerToken.getPositionY() - 1
+                    && currentPlayerToken.getPositionX() == opponentPlayerToken.getPositionX() - 1) {
+                listOfMoves.add(Move.SOUTH_EAST);
+            }
+            if (currentPlayerToken.getPositionY() == opponentPlayerToken.getPositionY() - 1
+                    && currentPlayerToken.getPositionX() == opponentPlayerToken.getPositionX()) {
+                listOfMoves.add(Move.SOUTH);
+            }
+            if (currentPlayerToken.getPositionY() == opponentPlayerToken.getPositionY() - 1
+                    && currentPlayerToken.getPositionX() == opponentPlayerToken.getPositionX() + 1) {
+                listOfMoves.add(Move.SOUTH_WEST);
+            }
+            if (currentPlayerToken.getPositionY() == opponentPlayerToken.getPositionY()
+                    && currentPlayerToken.getPositionX() == opponentPlayerToken.getPositionX() + 1) {
+                listOfMoves.add(Move.WEST);
+            }
+            if (currentPlayerToken.getPositionY() == opponentPlayerToken.getPositionY() + 1
+                    && currentPlayerToken.getPositionX() == opponentPlayerToken.getPositionX() + 1) {
+                listOfMoves.add(Move.NORTH_WEST);
+            }
+        }
+        return listOfMoves;
+    }
 
-    private void checkTheLastOpponentToken(Player currentPlayer, Player opponentPlayer) {
-//        for (var currentPlayerToken : currentPlayer.getPlayerTokens()) {
-////            var aa = possibleWaysToMove.stream().forEach(dictionary -> dictionary.get(currentPlayerToken).stream().filter(cell -> cell.getPositionY() == 1 && cell.getPositionX() == 1));
-//        }
 
-//        }
-        for (var currentPlayerTokenAndListOfOpponentTokens : possibleWaysToMove) {
-            var currentPlayerTokens = currentPlayerTokenAndListOfOpponentTokens.keySet();
-            // cell of current player
-            for (var currentToken : currentPlayerTokens) {
-                // the closest tokens of opponent player
-//                for (var opponentToken : currentPlayerTokenAndListOfOpponentTokens.get(currentToken)) {
-//
-//                }
-                for (var listOfClosestOpponentsTokens : currentPlayerTokenAndListOfOpponentTokens.values()) {
-                    for (var opponentToken : listOfClosestOpponentsTokens) {
-                        // TODO implement logic of checking what is after the opponent token
+    private void findTheEndOfWayForSpecificToken(ArrayList<Move> moves, Cell currentToken) {
+            for (var move : moves) {
+                if (move.equals(Move.NORTH)) {
+                    for (int y = currentToken.getPositionY() - 2; y >= 0; y--) {
+                        if (allCells[y][currentToken.getPositionX()].getTokenColor().equals(TokenColor.NOT_SPECIFIED)) {
+                            if (!possibleCells.contains(allCells[y][currentToken.getPositionX()])) possibleCells.add(allCells[y][currentToken.getPositionX()]);
+                            break;
+                        }
+                    }
+                } else if (move.equals(Move.NORTH_EAST)) {
+                    for (int y = currentToken.getPositionY() - 2; y >= 0; y--) {
+                        for (int x = currentToken.getPositionX() + 2; x < boardSize; x++) {
+                            if (allCells[y][x].getTokenColor().equals(TokenColor.NOT_SPECIFIED)) {
+                                if (!possibleCells.contains(allCells[y][x])) possibleCells.add(allCells[y][x]);
+                                break;
+                            }
+                        }
+                    }
+                } else if (move.equals(Move.EAST)) {
+                    for (int x = currentToken.getPositionX() + 2; x < boardSize; x++) {
+                        if (allCells[currentToken.getPositionY()][x].getTokenColor().equals(TokenColor.NOT_SPECIFIED)) {
+                            if (!possibleCells.contains(allCells[currentToken.getPositionY()][x])) possibleCells.add(allCells[currentToken.getPositionY()][x]);
+                            break;
+                        }
+                    }
+                } else if (move.equals(Move.SOUTH_EAST)) {
+                    for (int y = currentToken.getPositionY() + 2; y < boardSize; y++) {
+                        for (int x = currentToken.getPositionX() + 1; x < boardSize; x++) {
+                            if (allCells[y][x].getTokenColor().equals(TokenColor.NOT_SPECIFIED)) {
+                                if (!possibleCells.contains(allCells[y][x])) possibleCells.add(allCells[y][x]);
+                                break;
+                            }
+                        }
+                    }
+                } else if (move.equals(Move.SOUTH)) {
+                    for (int y = currentToken.getPositionY() + 2; y < boardSize; y++) {
+                        if (allCells[y][currentToken.getPositionX()].getTokenColor().equals(TokenColor.NOT_SPECIFIED)) {
+                            if (!possibleCells.contains(allCells[y][currentToken.getPositionX()])) possibleCells.add(allCells[y][currentToken.getPositionX()]);
+                            break;
+                        }
+                    }
+                } else if (move.equals(Move.SOUTH_WEST)) {
+                    for (int y = currentToken.getPositionY() + 2; y < boardSize; y++) {
+                        for (int x = currentToken.getPositionX() - 2; x <= 0; x--) {
+                            if (allCells[y][x].getTokenColor().equals(TokenColor.NOT_SPECIFIED)) {
+                                if (!possibleCells.contains(allCells[y][x])) possibleCells.add(allCells[y][x]);
+                                break;
+                            }
+                        }
+                    }
+                } else if (move.equals(Move.WEST)) {
+                    for (int x = currentToken.getPositionX() - 2; x >= 0; x--) {
+                        if (allCells[currentToken.getPositionY()][x].getTokenColor().equals(TokenColor.NOT_SPECIFIED)) {
+                            if (!possibleCells.contains(allCells[currentToken.getPositionY()][x])) possibleCells.add(allCells[currentToken.getPositionY()][x]);
+                            break;
+                        }
+                    }
+                } else if (move.equals(Move.NORTH_WEST)) {
+                    for (int y = currentToken.getPositionY() - 2; y >= 0; y--) {
+                        for (int x = currentToken.getPositionX() - 2; x <= 0; x--) {
+                            if (allCells[y][x].getTokenColor().equals(TokenColor.NOT_SPECIFIED)) {
+                                if (!possibleCells.contains(allCells[y][x])) possibleCells.add(allCells[y][x]);
+                                break;
+                            }
+                        }
                     }
                 }
             }
+    }
+
+    private void setHighlightedCells(Player currentPlayer) {
+        for (var cell : possibleCells) {
+            cell.setHighlighted(true);
+            cell.setPossibleTokenColor(currentPlayer.getPlayerColor());
         }
     }
+
+    private void removeHighlightedCells() {
+        for (var cell : possibleCells) {
+            cell.setHighlighted(false);
+            cell.setPossibleTokenColor(TokenColor.NOT_SPECIFIED);
+        }
+    }
+
+    private void flipOpponentsTokens() {
+
+    }
+
+    // Second way to check the end of way
+//    private void checkTheEndOfMove(HashMap<Cell, ArrayList<Move>> wayFromCurrentToken, Player currentPlayer, Player opponentPlayer) {
+//        for (var token : wayFromCurrentToken.keySet()) {
+//            for (var moves : wayFromCurrentToken.values()) {
+//                for (var move : moves) {
+//                    if (findNextFreeCell(move, currentPlayer.getPlayerColor(), token)) {
+//                        //TODO there
+//                    }
+//                }
+//            }
+//        }
+//    }
+
+//    private boolean findNextFreeCell(Move move, TokenColor playerColor, Cell currentCell) {
+//        if (move.equals(Move.NORTH)) {
+//
+//        }
+//        for (int x = 0; x < boardSize; x++) {
+//            for (int y = 0; y < boardSize; y++) {
+//
+//            }
+//        }
+//    }
+
+
 
     private void findCurrentPlayerToken(Player currentPlayer) {
         for (int y = 0; y < allCells.length; y++) {
@@ -247,6 +409,7 @@ public class GameLogic extends JPanel {
             }
         }
     }
+
 
 //    private void removeOldPossibleTokens() {
 //        possibleCells.removeAll(possibleCells);
