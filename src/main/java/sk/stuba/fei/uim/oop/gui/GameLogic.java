@@ -153,7 +153,6 @@ public class GameLogic extends JPanel {
         var possibleTokens = new ArrayList<Cell>();
         var allFlipTokens = new ArrayList<Cell>();
         for (var move : moves) {
-            possibleTokens.clear();
             if (move.equals(Move.NORTH)) {
                 for (int y = currentToken.getPositionY() - 1; y >= 0; y--) {
                     if (!allCells[y][currentToken.getPositionX()].getTokenColor().equals(TokenColor.NOT_SPECIFIED)
@@ -162,6 +161,11 @@ public class GameLogic extends JPanel {
                     }
                     if (allCells[y][currentToken.getPositionX()].getTokenColor().equals(currentToken.getTokenColor())) {
                         allFlipTokens.addAll(possibleTokens);
+                        possibleTokens.clear();
+                        break;
+                    }
+                    if (allCells[y][currentToken.getPositionX()].getTokenColor().equals(TokenColor.NOT_SPECIFIED)) {
+                        possibleTokens.clear();
                         break;
                     }
                 }
@@ -172,9 +176,17 @@ public class GameLogic extends JPanel {
                         if (!allCells[y][x].getTokenColor().equals(TokenColor.NOT_SPECIFIED)
                                 && !allCells[y][x].getTokenColor().equals(currentToken.getTokenColor())) {
                             possibleTokens.add(allCells[y][x]);
+                            y --;
                         }
                         if (allCells[y][x].getTokenColor().equals(currentToken.getTokenColor())) {
                             allFlipTokens.addAll(possibleTokens);
+                            y = 0;
+                            possibleTokens.clear();
+                            break;
+                        }
+                        if (allCells[y][x].getTokenColor().equals(TokenColor.NOT_SPECIFIED)) {
+                            possibleTokens.clear();
+                            y = 0;
                             break;
                         }
                     }
@@ -185,8 +197,13 @@ public class GameLogic extends JPanel {
                             && !allCells[currentToken.getPositionY()][x].getTokenColor().equals(currentToken.getTokenColor())) {
                         possibleTokens.add(allCells[currentToken.getPositionY()][x]);
                     }
-                    if (!allCells[currentToken.getPositionY()][x].getTokenColor().equals(currentToken.getTokenColor())) {
+                    if (allCells[currentToken.getPositionY()][x].getTokenColor().equals(currentToken.getTokenColor())) {
                         allFlipTokens.addAll(possibleTokens);
+                        possibleTokens.clear();
+                        break;
+                    }
+                    if (allCells[currentToken.getPositionY()][x].getTokenColor().equals(TokenColor.NOT_SPECIFIED)) {
+                        possibleTokens.clear();
                         break;
                     }
                 }
@@ -196,9 +213,17 @@ public class GameLogic extends JPanel {
                         if (!allCells[y][x].getTokenColor().equals(TokenColor.NOT_SPECIFIED)
                                 && !allCells[y][x].getTokenColor().equals(currentToken.getTokenColor()) ) {
                             possibleTokens.add(allCells[y][x]);
+                            y ++;
                         }
                         if (allCells[y][x].getTokenColor().equals(currentToken.getTokenColor())) {
                             allFlipTokens.addAll(possibleTokens);
+                            possibleTokens.clear();
+                            y = 20;
+                            break;
+                        }
+                        if (allCells[y][x].getTokenColor().equals(TokenColor.NOT_SPECIFIED)) {
+                            possibleTokens.clear();
+                            y = 20;
                             break;
                         }
                     }
@@ -211,18 +236,30 @@ public class GameLogic extends JPanel {
                     }
                     if (allCells[y][currentToken.getPositionX()].getTokenColor().equals(currentToken.getTokenColor())) {
                         allFlipTokens.addAll(possibleTokens);
+                        possibleTokens.clear();
+                        break;
+                    }
+                    if (allCells[y][currentToken.getPositionX()].getTokenColor().equals(TokenColor.NOT_SPECIFIED)) {
+                        possibleTokens.clear();
                         break;
                     }
                 }
             } else if (move.equals(Move.SOUTH_WEST)) {
                 for (int y = currentToken.getPositionY() + 1; y < boardSize; y++) {
-                    for (int x = currentToken.getPositionX() - 1; x <= 0; x--) {
+                    for (int x = currentToken.getPositionX() - 1; x >= 0; x--) {
                         if (!allCells[y][x].getTokenColor().equals(TokenColor.NOT_SPECIFIED)
                                 && !allCells[y][x].getTokenColor().equals(currentToken.getTokenColor())) {
                             possibleTokens.add(allCells[y][x]);
+                            y ++;
                         }
                         if (allCells[y][x].getTokenColor().equals(currentToken.getTokenColor())) {
                             allFlipTokens.addAll(possibleTokens);
+                            y = 20;
+                            break;
+                        }
+                        if (allCells[y][x].getTokenColor().equals(TokenColor.NOT_SPECIFIED)) {
+                            possibleTokens.clear();
+                            y = 20;
                             break;
                         }
                     }
@@ -235,18 +272,31 @@ public class GameLogic extends JPanel {
                     }
                     if (allCells[currentToken.getPositionY()][x].getTokenColor().equals(currentToken.getTokenColor())) {
                         allFlipTokens.addAll(possibleTokens);
+                        possibleTokens.clear();
+                        break;
+                    }
+                    if (allCells[currentToken.getPositionY()][x].getTokenColor().equals(TokenColor.NOT_SPECIFIED)) {
+                        possibleTokens.clear();
                         break;
                     }
                 }
             } else if (move.equals(Move.NORTH_WEST)) {
                 for (int y = currentToken.getPositionY() - 1; y >= 0; y--) {
-                    for (int x = currentToken.getPositionX() - 1; x <= 0; x--) {
+                    for (int x = currentToken.getPositionX() - 1; x >= 0; x--) {
                         if (!allCells[y][x].getTokenColor().equals(TokenColor.NOT_SPECIFIED)
                                 && !allCells[y][x].getTokenColor().equals(currentToken.getTokenColor())) {
                             possibleTokens.add(allCells[y][x]);
+                            y --;
                         }
                         if (allCells[y][x].getTokenColor().equals(currentToken.getTokenColor())) {
                             allFlipTokens.addAll(possibleTokens);
+                            possibleTokens.clear();
+                            y = 20;
+                            break;
+                        }
+                        if (allCells[y][x].getTokenColor().equals(TokenColor.NOT_SPECIFIED)) {
+                            possibleTokens.clear();
+                            y = 20;
                             break;
                         }
                     }
@@ -328,7 +378,12 @@ public class GameLogic extends JPanel {
                 if (move.equals(Move.NORTH)) {
                     for (int y = currentToken.getPositionY() - 2; y >= 0; y--) {
                         if (allCells[y][currentToken.getPositionX()].getTokenColor().equals(TokenColor.NOT_SPECIFIED)) {
-                            if (!listOfPossibleCell.contains(allCells[y][currentToken.getPositionX()])) listOfPossibleCell.add(allCells[y][currentToken.getPositionX()]);
+                            if (!listOfPossibleCell.contains(allCells[y][currentToken.getPositionX()])) {
+                                listOfPossibleCell.add(allCells[y][currentToken.getPositionX()]);
+                                break;
+                            }
+                        }
+                        else {
                             break;
                         }
                     }
@@ -336,7 +391,13 @@ public class GameLogic extends JPanel {
                     for (int y = currentToken.getPositionY() - 2; y >= 0; y--) {
                         for (int x = currentToken.getPositionX() + 2; x < boardSize; x++) {
                             if (allCells[y][x].getTokenColor().equals(TokenColor.NOT_SPECIFIED)) {
-                                if (!listOfPossibleCell.contains(allCells[y][x])) listOfPossibleCell.add(allCells[y][x]);
+                                if (!listOfPossibleCell.contains(allCells[y][x])) {
+                                    listOfPossibleCell.add(allCells[y][x]);
+                                    y = 0;
+                                    break;
+                                }
+                            }
+                            else {
                                 break;
                             }
                         }
@@ -344,7 +405,12 @@ public class GameLogic extends JPanel {
                 } else if (move.equals(Move.EAST)) {
                     for (int x = currentToken.getPositionX() + 2; x < boardSize; x++) {
                         if (allCells[currentToken.getPositionY()][x].getTokenColor().equals(TokenColor.NOT_SPECIFIED)) {
-                            if (!listOfPossibleCell.contains(allCells[currentToken.getPositionY()][x])) listOfPossibleCell.add(allCells[currentToken.getPositionY()][x]);
+                            if (!listOfPossibleCell.contains(allCells[currentToken.getPositionY()][x])) {
+                                listOfPossibleCell.add(allCells[currentToken.getPositionY()][x]);
+                                break;
+                            }
+                        }
+                        else {
                             break;
                         }
                     }
@@ -352,23 +418,41 @@ public class GameLogic extends JPanel {
                     for (int y = currentToken.getPositionY() + 2; y < boardSize; y++) {
                         for (int x = currentToken.getPositionX() + 1; x < boardSize; x++) {
                             if (allCells[y][x].getTokenColor().equals(TokenColor.NOT_SPECIFIED)) {
-                                if (!listOfPossibleCell.contains(allCells[y][x])) listOfPossibleCell.add(allCells[y][x]);
+                                if (!listOfPossibleCell.contains(allCells[y][x])) {
+                                    listOfPossibleCell.add(allCells[y][x]);
+                                    y = 20;
+                                    break;
+                                }
+                            }
+                            else {
                                 break;
                             }
                         }
+
                     }
                 } else if (move.equals(Move.SOUTH)) {
                     for (int y = currentToken.getPositionY() + 2; y < boardSize; y++) {
                         if (allCells[y][currentToken.getPositionX()].getTokenColor().equals(TokenColor.NOT_SPECIFIED)) {
-                            if (!listOfPossibleCell.contains(allCells[y][currentToken.getPositionX()])) listOfPossibleCell.add(allCells[y][currentToken.getPositionX()]);
+                            if (!listOfPossibleCell.contains(allCells[y][currentToken.getPositionX()])) {
+                                listOfPossibleCell.add(allCells[y][currentToken.getPositionX()]);
+                                break;
+                            }
+                        }
+                        else {
                             break;
                         }
                     }
                 } else if (move.equals(Move.SOUTH_WEST)) {
                     for (int y = currentToken.getPositionY() + 2; y < boardSize; y++) {
-                        for (int x = currentToken.getPositionX() - 2; x <= 0; x--) {
+                        for (int x = currentToken.getPositionX() - 2; x >= 0; x--) {
                             if (allCells[y][x].getTokenColor().equals(TokenColor.NOT_SPECIFIED)) {
-                                if (!listOfPossibleCell.contains(allCells[y][x])) listOfPossibleCell.add(allCells[y][x]);
+                                if (!listOfPossibleCell.contains(allCells[y][x])) {
+                                    listOfPossibleCell.add(allCells[y][x]);
+                                    y = 20;
+                                    break;
+                                }
+                            }
+                            else {
                                 break;
                             }
                         }
@@ -376,15 +460,26 @@ public class GameLogic extends JPanel {
                 } else if (move.equals(Move.WEST)) {
                     for (int x = currentToken.getPositionX() - 2; x >= 0; x--) {
                         if (allCells[currentToken.getPositionY()][x].getTokenColor().equals(TokenColor.NOT_SPECIFIED)) {
-                            if (!listOfPossibleCell.contains(allCells[currentToken.getPositionY()][x])) listOfPossibleCell.add(allCells[currentToken.getPositionY()][x]);
+                            if (!listOfPossibleCell.contains(allCells[currentToken.getPositionY()][x])) {
+                                listOfPossibleCell.add(allCells[currentToken.getPositionY()][x]);
+                                break;
+                            }
+                        }
+                        else {
                             break;
                         }
                     }
                 } else if (move.equals(Move.NORTH_WEST)) {
                     for (int y = currentToken.getPositionY() - 2; y >= 0; y--) {
-                        for (int x = currentToken.getPositionX() - 2; x <= 0; x--) {
+                        for (int x = currentToken.getPositionX() - 2; x >= 0; x--) {
                             if (allCells[y][x].getTokenColor().equals(TokenColor.NOT_SPECIFIED)) {
-                                if (!listOfPossibleCell.contains(allCells[y][x])) listOfPossibleCell.add(allCells[y][x]);
+                                if (!listOfPossibleCell.contains(allCells[y][x])) {
+                                    listOfPossibleCell.add(allCells[y][x]);
+                                    y = 0;
+                                    break;
+                                }
+                            }
+                            else {
                                 break;
                             }
                         }
@@ -408,110 +503,68 @@ public class GameLogic extends JPanel {
         }
     }
 
-
-    // Second way to check the end of way
-//    private void checkTheEndOfMove(HashMap<Cell, ArrayList<Move>> wayFromCurrentToken, Player currentPlayer, Player opponentPlayer) {
-//        for (var token : wayFromCurrentToken.keySet()) {
-//            for (var moves : wayFromCurrentToken.values()) {
-//                for (var move : moves) {
-//                    if (findNextFreeCell(move, currentPlayer.getPlayerColor(), token)) {
-//                        //TODO there
-//                    }
+//    private void findTheClosestOppositeToken(int origTokenY, int origTokenX, TokenColor origTokenColor) {
+//        for (int y = 0; y < allCells.length; y++) {
+//            for (int x = 0; x < allCells.length; x++) {
+//                if ((origTokenY == y - 1 || origTokenY == y + 1 || origTokenY == y)
+//                        && (origTokenX == x - 1 || origTokenX == x + 1 || origTokenX == x)
+//                        && !(allCells[y][x].getTokenColor().equals(TokenColor.NOT_SPECIFIED))) {
+//                    findTheClosestFreeToken(origTokenY, origTokenX, origTokenColor, y, x, allCells[y][x].getTokenColor());
+//                }
+//                if (isNewRound){
+//                    return;
 //                }
 //            }
 //        }
 //    }
 
-//    private boolean findNextFreeCell(Move move, TokenColor playerColor, Cell currentCell) {
-//        if (move.equals(Move.NORTH)) {
-//
-//        }
-//        for (int x = 0; x < boardSize; x++) {
-//            for (int y = 0; y < boardSize; y++) {
-//
+//    private void findTheClosestFreeToken(int origTokenY, int origTokenX, TokenColor origTokenColor, int possibleTokenY, int possibleTokenX, TokenColor possibleTokenColor) {
+//        for (int y = 0; y < allCells.length; y++) {
+//            for (int x = 0; x < allCells.length; x++) {
+//                if (!possibleCells.contains(allCells[y][x])) {
+//                    //check top
+//                    if (origTokenX == possibleTokenX && possibleTokenX == x
+//                            && origTokenY == possibleTokenY + 1 && possibleTokenY == y + 1) {
+//                        allCells[y][x].setHighlighted(true);
+//                        allCells[y][x].setPossibleTokenColor(origTokenColor);
+//                        possibleCells.add(allCells[y][x]);
+//                        break;
+//                    }
+//                    //check bottom
+//                    if (origTokenX == possibleTokenX && possibleTokenX == x
+//                            && origTokenY == possibleTokenY - 1 && possibleTokenY == y - 1) {
+//                        allCells[y][x].setHighlighted(true);
+//                        allCells[y][x].setPossibleTokenColor(origTokenColor);
+//                        possibleCells.add(allCells[y][x]);
+//                        break;
+//                    }
+//                    // check right
+//                    if (origTokenY == possibleTokenY && possibleTokenY == y
+//                            && origTokenX == possibleTokenX - 1 && possibleTokenX == x - 1) {
+//                        allCells[y][x].setHighlighted(true);
+//                        allCells[y][x].setPossibleTokenColor(origTokenColor);
+//                        possibleCells.add(allCells[y][x]);
+//                        break;
+//                    }
+//                    // check left
+//                    if (origTokenY == possibleTokenY && possibleTokenY == y
+//                            && origTokenX == possibleTokenX + 1 && possibleTokenX == x + 1) {
+//                        allCells[y][x].setHighlighted(true);
+//                        allCells[y][x].setPossibleTokenColor(origTokenColor);
+//                        possibleCells.add(allCells[y][x]);
+//                        break;
+//                    }
+//                    if (possibleCells.stream().anyMatch(cell -> cell.isClicked())) {
+//                        round++;
+//                        isNewRound = true;
+//                        possibleCells.stream().forEach(cell -> cell.setHighlighted(false));
+//                        possibleCells.removeAll(possibleCells);
+//                        return;
+//                    }
+//                }
 //            }
 //        }
 //    }
-
-
-
-    private void findCurrentPlayerToken(Player currentPlayer) {
-        for (int y = 0; y < allCells.length; y++) {
-            for (int x = 0; x < allCells.length; x++) {
-                if (allCells[y][x].getTokenColor() == currentPlayer.getPlayerColor()) {
-                    findTheClosestOppositeToken(y, x, allCells[y][x].getTokenColor());
-                }
-                if (isNewRound) return;
-            }
-        }
-    }
-
-    private TokenColor getOppositeTokenColor(TokenColor originColor) {
-        return originColor.equals(TokenColor.BLACK) ? TokenColor.WHITE : TokenColor.BLACK;
-    }
-
-    private void findTheClosestOppositeToken(int origTokenY, int origTokenX, TokenColor origTokenColor) {
-        for (int y = 0; y < allCells.length; y++) {
-            for (int x = 0; x < allCells.length; x++) {
-                if ((origTokenY == y - 1 || origTokenY == y + 1 || origTokenY == y)
-                        && (origTokenX == x - 1 || origTokenX == x + 1 || origTokenX == x)
-                        && !(allCells[y][x].getTokenColor().equals(TokenColor.NOT_SPECIFIED))) {
-                    findTheClosestFreeToken(origTokenY, origTokenX, origTokenColor, y, x, allCells[y][x].getTokenColor());
-                }
-                if (isNewRound){
-                    return;
-                }
-            }
-        }
-    }
-
-    private void findTheClosestFreeToken(int origTokenY, int origTokenX, TokenColor origTokenColor, int possibleTokenY, int possibleTokenX, TokenColor possibleTokenColor) {
-        for (int y = 0; y < allCells.length; y++) {
-            for (int x = 0; x < allCells.length; x++) {
-                if (!possibleCells.contains(allCells[y][x])) {
-                    //check top
-                    if (origTokenX == possibleTokenX && possibleTokenX == x
-                            && origTokenY == possibleTokenY + 1 && possibleTokenY == y + 1) {
-                        allCells[y][x].setHighlighted(true);
-                        allCells[y][x].setPossibleTokenColor(origTokenColor);
-                        possibleCells.add(allCells[y][x]);
-                        break;
-                    }
-                    //check bottom
-                    if (origTokenX == possibleTokenX && possibleTokenX == x
-                            && origTokenY == possibleTokenY - 1 && possibleTokenY == y - 1) {
-                        allCells[y][x].setHighlighted(true);
-                        allCells[y][x].setPossibleTokenColor(origTokenColor);
-                        possibleCells.add(allCells[y][x]);
-                        break;
-                    }
-                    // check right
-                    if (origTokenY == possibleTokenY && possibleTokenY == y
-                            && origTokenX == possibleTokenX - 1 && possibleTokenX == x - 1) {
-                        allCells[y][x].setHighlighted(true);
-                        allCells[y][x].setPossibleTokenColor(origTokenColor);
-                        possibleCells.add(allCells[y][x]);
-                        break;
-                    }
-                    // check left
-                    if (origTokenY == possibleTokenY && possibleTokenY == y
-                            && origTokenX == possibleTokenX + 1 && possibleTokenX == x + 1) {
-                        allCells[y][x].setHighlighted(true);
-                        allCells[y][x].setPossibleTokenColor(origTokenColor);
-                        possibleCells.add(allCells[y][x]);
-                        break;
-                    }
-                    if (possibleCells.stream().anyMatch(cell -> cell.isClicked())) {
-                        round++;
-                        isNewRound = true;
-                        possibleCells.stream().forEach(cell -> cell.setHighlighted(false));
-                        possibleCells.removeAll(possibleCells);
-                        return;
-                    }
-                }
-            }
-        }
-    }
 
 
 //    private void removeOldPossibleTokens() {
