@@ -11,6 +11,7 @@ import sk.stuba.fei.uim.oop.player.Player;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.List;
 import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -48,6 +49,12 @@ public class GameLogic extends JPanel {
     private ArrayList<HashMap<Cell, ArrayList<Cell>>> possibleWaysToMove;
 
 
+    @Getter
+    @Setter
+    private Player currentPlayer;
+    @Getter
+    @Setter
+    private Player opponentPlayer;
 
     private Cell[][] allCells;
 
@@ -92,15 +99,15 @@ public class GameLogic extends JPanel {
             round ++;
             removeHighlightedCells();
             possibleCells.clear();
-//            possibleCells.removeAll(possibleCells);
-            start();
+            flipOpponentsTokens(newToken);
+//            start();
         }
     }
 
 
     public void start() {
-        var currentPlayer = round % 2 == 1 ? player1 : player2;
-        var opponentPlayer = round % 2 == 0 ? player1 : player2;
+        currentPlayer = round % 2 == 1 ? player1 : player2;
+        opponentPlayer = round % 2 == 0 ? player1 : player2;
 //        findCurrentPlayerToken(currentPlayer);
         findPlayersTokens(currentPlayer, opponentPlayer);
         findTheClosestCellsNearToCurrentPlayer(currentPlayer, opponentPlayer);
@@ -109,6 +116,129 @@ public class GameLogic extends JPanel {
         isNewRound = false;
     }
 
+    private void flipOpponentsTokens(Cell selectedNewToken) {
+        var listOfMoves = findListOfMoves(opponentPlayer, selectedNewToken);
+        // TODO there
+//        var flipTokens = findTheEndOfWayForSpecificToken(listOfMoves, selectedNewToken);
+        var newFlipTokens = flipOpponentsTokensLogic(selectedNewToken, listOfMoves);
+        flipToOpponentTokens(newFlipTokens);
+    }
+
+    private ArrayList<Cell> flipOpponentsTokensLogic(Cell currentToken, ArrayList<Move> moves) {
+//        var allPossibleWays =  Arrays.asList(Move.NORTH, Move.NORTH_EAST, Move.EAST, Move.SOUTH_EAST, Move.SOUTH, Move.SOUTH_WEST, Move.WEST, Move.NORTH_WEST);
+        var possibleTokens = new ArrayList<Cell>();
+        var allFlipTokens = new ArrayList<Cell>();
+        for (var move : moves) {
+            possibleTokens.clear();
+            if (move.equals(Move.NORTH)) {
+                for (int y = currentToken.getPositionY() - 1; y >= 0; y--) {
+                    if (!allCells[y][currentToken.getPositionX()].getTokenColor().equals(TokenColor.NOT_SPECIFIED)
+                            &&!allCells[y][currentToken.getPositionX()].getTokenColor().equals(currentToken.getTokenColor())) {
+                        possibleTokens.add(allCells[y][currentToken.getPositionX()]);
+                    }
+                    if (allCells[y][currentToken.getPositionX()].getTokenColor().equals(currentToken.getTokenColor())) {
+                        allFlipTokens.addAll(possibleTokens);
+                        break;
+                    }
+                }
+              // TODO there
+            } else if (move.equals(Move.NORTH_EAST)) {
+                for (int y = currentToken.getPositionY() - 1; y >= 0; y--) {
+                    for (int x = currentToken.getPositionX() + 1; x < boardSize; x++) {
+                        if (!allCells[y][x].getTokenColor().equals(TokenColor.NOT_SPECIFIED)
+                                && !allCells[y][x].getTokenColor().equals(currentToken.getTokenColor())) {
+                            possibleTokens.add(allCells[y][x]);
+                        }
+                        if (allCells[y][x].getTokenColor().equals(currentToken.getTokenColor())) {
+                            allFlipTokens.addAll(possibleTokens);
+                            break;
+                        }
+                    }
+                }
+            } else if (move.equals(Move.EAST)) {
+                for (int x = currentToken.getPositionX() + 1; x < boardSize; x++) {
+                    if (!allCells[currentToken.getPositionY()][x].getTokenColor().equals(TokenColor.NOT_SPECIFIED)
+                            && !allCells[currentToken.getPositionY()][x].getTokenColor().equals(currentToken.getTokenColor())) {
+                        possibleTokens.add(allCells[currentToken.getPositionY()][x]);
+                    }
+                    if (!allCells[currentToken.getPositionY()][x].getTokenColor().equals(currentToken.getTokenColor())) {
+                        allFlipTokens.addAll(possibleTokens);
+                        break;
+                    }
+                }
+            } else if (move.equals(Move.SOUTH_EAST)) {
+                for (int y = currentToken.getPositionY() + 1; y < boardSize; y++) {
+                    for (int x = currentToken.getPositionX() + 1; x < boardSize; x++) {
+                        if (!allCells[y][x].getTokenColor().equals(TokenColor.NOT_SPECIFIED)
+                                && !allCells[y][x].getTokenColor().equals(currentToken.getTokenColor()) ) {
+                            possibleTokens.add(allCells[y][x]);
+                        }
+                        if (allCells[y][x].getTokenColor().equals(currentToken.getTokenColor())) {
+                            allFlipTokens.addAll(possibleTokens);
+                            break;
+                        }
+                    }
+                }
+            } else if (move.equals(Move.SOUTH)) {
+                for (int y = currentToken.getPositionY() + 1; y < boardSize; y++) {
+                    if (!allCells[y][currentToken.getPositionX()].getTokenColor().equals(TokenColor.NOT_SPECIFIED)
+                            && !allCells[y][currentToken.getPositionX()].getTokenColor().equals(currentToken.getTokenColor())) {
+                        possibleTokens.add(allCells[y][currentToken.getPositionX()]);
+                    }
+                    if (allCells[y][currentToken.getPositionX()].getTokenColor().equals(currentToken.getTokenColor())) {
+                        allFlipTokens.addAll(possibleTokens);
+                        break;
+                    }
+                }
+            } else if (move.equals(Move.SOUTH_WEST)) {
+                for (int y = currentToken.getPositionY() + 1; y < boardSize; y++) {
+                    for (int x = currentToken.getPositionX() - 1; x <= 0; x--) {
+                        if (!allCells[y][x].getTokenColor().equals(TokenColor.NOT_SPECIFIED)
+                                && !allCells[y][x].getTokenColor().equals(currentToken.getTokenColor())) {
+                            possibleTokens.add(allCells[y][x]);
+                        }
+                        if (allCells[y][x].getTokenColor().equals(currentToken.getTokenColor())) {
+                            allFlipTokens.addAll(possibleTokens);
+                            break;
+                        }
+                    }
+                }
+            } else if (move.equals(Move.WEST)) {
+                for (int x = currentToken.getPositionX() - 1; x >= 0; x--) {
+                    if (!allCells[currentToken.getPositionY()][x].getTokenColor().equals(TokenColor.NOT_SPECIFIED)
+                            && (!allCells[currentToken.getPositionY()][x].getTokenColor().equals(currentToken.getTokenColor()))) {
+                        possibleTokens.add(allCells[currentToken.getPositionY()][x]);
+                    }
+                    if (allCells[currentToken.getPositionY()][x].getTokenColor().equals(currentToken.getTokenColor())) {
+                        allFlipTokens.addAll(possibleTokens);
+                        break;
+                    }
+                }
+            } else if (move.equals(Move.NORTH_WEST)) {
+                for (int y = currentToken.getPositionY() - 1; y >= 0; y--) {
+                    for (int x = currentToken.getPositionX() - 1; x <= 0; x--) {
+                        if (!allCells[y][x].getTokenColor().equals(TokenColor.NOT_SPECIFIED)
+                                && !allCells[y][x].getTokenColor().equals(currentToken.getTokenColor())) {
+                            possibleTokens.add(allCells[y][x]);
+                        }
+                        if (allCells[y][x].getTokenColor().equals(currentToken.getTokenColor())) {
+                            allFlipTokens.addAll(possibleTokens);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        return allFlipTokens;
+    }
+
+    private void flipToOpponentTokens(ArrayList<Cell> tokens) {
+        for (var token : tokens) {
+            token.setTokenColor(currentPlayer.getPlayerColor());
+            token.setPossibleToPaint(true);
+        }
+        allCells[0][0].setTokenColor(TokenColor.BLACK);
+    }
 
 
     private void findPlayersTokens(Player currentPlayer, Player opponentPlayer) {
@@ -128,57 +258,14 @@ public class GameLogic extends JPanel {
 
     private void findTheClosestCellsNearToCurrentPlayer(Player currentPlayer, Player opponentPlayer) {
         for (var currentPlayerToken : currentPlayer.getPlayerTokens()) {
-            //make own functio
-//            var listOfMoves = new ArrayList<Move>();
-//            for (var opponentPlayerToken : opponentPlayer.getPlayerTokens()) {
-//                // north
-//                if (currentPlayerToken.getPositionX() == opponentPlayerToken.getPositionX()
-//                        && currentPlayerToken.getPositionY() == opponentPlayerToken.getPositionY() + 1) {
-//                    listOfMoves.add(Move.NORTH);
-//                }
-//                // north east
-//                if (currentPlayerToken.getPositionY() == opponentPlayerToken.getPositionY() + 1
-//                        && currentPlayerToken.getPositionX() == opponentPlayerToken.getPositionX() - 1) {
-//                    listOfMoves.add(Move.NORTH_EAST);
-//                }
-//                if (currentPlayerToken.getPositionY() == opponentPlayerToken.getPositionY()
-//                        && currentPlayerToken.getPositionX() == opponentPlayerToken.getPositionX() - 1) {
-//                    listOfMoves.add(Move.EAST);
-//                }
-//                if (currentPlayerToken.getPositionY() == opponentPlayerToken.getPositionY() - 1
-//                        && currentPlayerToken.getPositionX() == opponentPlayerToken.getPositionX() - 1) {
-//                    listOfMoves.add(Move.SOUTH_EAST);
-//                }
-//                if (currentPlayerToken.getPositionY() == opponentPlayerToken.getPositionY() - 1
-//                        && currentPlayerToken.getPositionX() == opponentPlayerToken.getPositionX()) {
-//                    listOfMoves.add(Move.SOUTH);
-//                }
-//                if (currentPlayerToken.getPositionY() == opponentPlayerToken.getPositionY() - 1
-//                        && currentPlayerToken.getPositionX() == opponentPlayerToken.getPositionX() + 1) {
-//                    listOfMoves.add(Move.SOUTH_WEST);
-//                }
-//                if (currentPlayerToken.getPositionY() == opponentPlayerToken.getPositionY()
-//                        && currentPlayerToken.getPositionX() == opponentPlayerToken.getPositionX() + 1) {
-//                    listOfMoves.add(Move.WEST);
-//                }
-//                if (currentPlayerToken.getPositionY() == opponentPlayerToken.getPositionY() + 1
-//                        && currentPlayerToken.getPositionX() == opponentPlayerToken.getPositionX() + 1) {
-//                    listOfMoves.add(Move.NORTH_WEST);
-//                }
-//            }
-            // end of own function
             var listOfMoves = findListOfMoves(opponentPlayer, currentPlayerToken);
-            findTheEndOfWayForSpecificToken(listOfMoves, currentPlayerToken);
-//            wayFromCurrentToken.put(currentPlayerToken, listOfMoves);
-//
-//            possibleWaysForCurrentToken.put(currentPlayerToken, listOfPossibleOpponentTokens);
-//            possibleWaysToMove.add(possibleWaysForCurrentToken);
+            possibleCells.addAll(findTheEndOfWayForSpecificToken(listOfMoves, currentPlayerToken));
         }
     }
 
-    private ArrayList<Move> findListOfMoves(Player opponent, Cell currentPlayerToken) {
+    private ArrayList<Move> findListOfMoves(Player opponentPlayer, Cell currentPlayerToken) {
         var listOfMoves = new ArrayList<Move>();
-        for (var opponentPlayerToken : opponent.getPlayerTokens()) {
+        for (var opponentPlayerToken : opponentPlayer.getPlayerTokens()) {
             // north
             if (currentPlayerToken.getPositionX() == opponentPlayerToken.getPositionX()
                     && currentPlayerToken.getPositionY() == opponentPlayerToken.getPositionY() + 1) {
@@ -218,12 +305,13 @@ public class GameLogic extends JPanel {
     }
 
 
-    private void findTheEndOfWayForSpecificToken(ArrayList<Move> moves, Cell currentToken) {
+    private ArrayList<Cell> findTheEndOfWayForSpecificToken(ArrayList<Move> moves, Cell currentToken) {
+        var listOfPossibleCell = new ArrayList<Cell>();
             for (var move : moves) {
                 if (move.equals(Move.NORTH)) {
                     for (int y = currentToken.getPositionY() - 2; y >= 0; y--) {
                         if (allCells[y][currentToken.getPositionX()].getTokenColor().equals(TokenColor.NOT_SPECIFIED)) {
-                            if (!possibleCells.contains(allCells[y][currentToken.getPositionX()])) possibleCells.add(allCells[y][currentToken.getPositionX()]);
+                            if (!listOfPossibleCell.contains(allCells[y][currentToken.getPositionX()])) listOfPossibleCell.add(allCells[y][currentToken.getPositionX()]);
                             break;
                         }
                     }
@@ -231,7 +319,7 @@ public class GameLogic extends JPanel {
                     for (int y = currentToken.getPositionY() - 2; y >= 0; y--) {
                         for (int x = currentToken.getPositionX() + 2; x < boardSize; x++) {
                             if (allCells[y][x].getTokenColor().equals(TokenColor.NOT_SPECIFIED)) {
-                                if (!possibleCells.contains(allCells[y][x])) possibleCells.add(allCells[y][x]);
+                                if (!listOfPossibleCell.contains(allCells[y][x])) listOfPossibleCell.add(allCells[y][x]);
                                 break;
                             }
                         }
@@ -239,7 +327,7 @@ public class GameLogic extends JPanel {
                 } else if (move.equals(Move.EAST)) {
                     for (int x = currentToken.getPositionX() + 2; x < boardSize; x++) {
                         if (allCells[currentToken.getPositionY()][x].getTokenColor().equals(TokenColor.NOT_SPECIFIED)) {
-                            if (!possibleCells.contains(allCells[currentToken.getPositionY()][x])) possibleCells.add(allCells[currentToken.getPositionY()][x]);
+                            if (!listOfPossibleCell.contains(allCells[currentToken.getPositionY()][x])) listOfPossibleCell.add(allCells[currentToken.getPositionY()][x]);
                             break;
                         }
                     }
@@ -247,7 +335,7 @@ public class GameLogic extends JPanel {
                     for (int y = currentToken.getPositionY() + 2; y < boardSize; y++) {
                         for (int x = currentToken.getPositionX() + 1; x < boardSize; x++) {
                             if (allCells[y][x].getTokenColor().equals(TokenColor.NOT_SPECIFIED)) {
-                                if (!possibleCells.contains(allCells[y][x])) possibleCells.add(allCells[y][x]);
+                                if (!listOfPossibleCell.contains(allCells[y][x])) listOfPossibleCell.add(allCells[y][x]);
                                 break;
                             }
                         }
@@ -255,7 +343,7 @@ public class GameLogic extends JPanel {
                 } else if (move.equals(Move.SOUTH)) {
                     for (int y = currentToken.getPositionY() + 2; y < boardSize; y++) {
                         if (allCells[y][currentToken.getPositionX()].getTokenColor().equals(TokenColor.NOT_SPECIFIED)) {
-                            if (!possibleCells.contains(allCells[y][currentToken.getPositionX()])) possibleCells.add(allCells[y][currentToken.getPositionX()]);
+                            if (!listOfPossibleCell.contains(allCells[y][currentToken.getPositionX()])) listOfPossibleCell.add(allCells[y][currentToken.getPositionX()]);
                             break;
                         }
                     }
@@ -263,7 +351,7 @@ public class GameLogic extends JPanel {
                     for (int y = currentToken.getPositionY() + 2; y < boardSize; y++) {
                         for (int x = currentToken.getPositionX() - 2; x <= 0; x--) {
                             if (allCells[y][x].getTokenColor().equals(TokenColor.NOT_SPECIFIED)) {
-                                if (!possibleCells.contains(allCells[y][x])) possibleCells.add(allCells[y][x]);
+                                if (!listOfPossibleCell.contains(allCells[y][x])) listOfPossibleCell.add(allCells[y][x]);
                                 break;
                             }
                         }
@@ -271,7 +359,7 @@ public class GameLogic extends JPanel {
                 } else if (move.equals(Move.WEST)) {
                     for (int x = currentToken.getPositionX() - 2; x >= 0; x--) {
                         if (allCells[currentToken.getPositionY()][x].getTokenColor().equals(TokenColor.NOT_SPECIFIED)) {
-                            if (!possibleCells.contains(allCells[currentToken.getPositionY()][x])) possibleCells.add(allCells[currentToken.getPositionY()][x]);
+                            if (!listOfPossibleCell.contains(allCells[currentToken.getPositionY()][x])) listOfPossibleCell.add(allCells[currentToken.getPositionY()][x]);
                             break;
                         }
                     }
@@ -279,13 +367,14 @@ public class GameLogic extends JPanel {
                     for (int y = currentToken.getPositionY() - 2; y >= 0; y--) {
                         for (int x = currentToken.getPositionX() - 2; x <= 0; x--) {
                             if (allCells[y][x].getTokenColor().equals(TokenColor.NOT_SPECIFIED)) {
-                                if (!possibleCells.contains(allCells[y][x])) possibleCells.add(allCells[y][x]);
+                                if (!listOfPossibleCell.contains(allCells[y][x])) listOfPossibleCell.add(allCells[y][x]);
                                 break;
                             }
                         }
                     }
                 }
             }
+            return listOfPossibleCell;
     }
 
     private void setHighlightedCells(Player currentPlayer) {
@@ -302,9 +391,6 @@ public class GameLogic extends JPanel {
         }
     }
 
-    private void flipOpponentsTokens() {
-
-    }
 
     // Second way to check the end of way
 //    private void checkTheEndOfMove(HashMap<Cell, ArrayList<Move>> wayFromCurrentToken, Player currentPlayer, Player opponentPlayer) {

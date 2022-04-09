@@ -7,8 +7,7 @@ import sk.stuba.fei.uim.oop.controls.CellHandler;
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.awt.event.*;
 
 import static sk.stuba.fei.uim.oop.boadr.TokenColor.NOT_SPECIFIED;
 
@@ -34,7 +33,7 @@ public class Cell extends JPanel implements MouseListener {
     private boolean isHighlighted;
     @Getter
     @Setter
-    private boolean isPossibleToPaint;
+    private boolean isPossibleToPaint = false;
 
     @Getter
     @Setter
@@ -43,6 +42,8 @@ public class Cell extends JPanel implements MouseListener {
     @Getter
     @Setter
     private TokenColor possibleTokenColor = NOT_SPECIFIED;
+
+
 
 
     @Getter
@@ -68,7 +69,7 @@ public class Cell extends JPanel implements MouseListener {
         setHighlighted(true);
         if (isHighlighted()) {
 //            isHighlighted = false;
-            isPossibleToPaint = true;
+//            isPossibleToPaint = true;
             isClicked = true;
             tokenColor = getPossibleTokenColor();
         }
@@ -76,11 +77,16 @@ public class Cell extends JPanel implements MouseListener {
 
 //    public void paint(Graphics g){
 //
-//        Graphics2D g2d = (Graphics2D) g.create();
-//        if (isHighlighted) {
-//            g2d.setColor(Color.yellow);
-//            g2d.setStroke(new BasicStroke(4));
-//            g2d.drawRect(0, 0, getWidth(), getHeight());
+//        if (isPossibleToPaint) {
+//            Graphics2D g2d = (Graphics2D) g.create();
+//            if (getTokenColor() == TokenColor.BLACK) {
+//                g2d.setColor(Color.black);
+//                g2d.fillOval(preferredSize.height / 4, preferredSize.width / 4, (int) ((double) getSize().width / 1.8), (int) ((double) getSize().width / 1.8));
+//            }
+//            if (getTokenColor() == TokenColor.WHITE) {
+//                g2d.setColor(Color.white);
+//                g2d.fillOval(preferredSize.height / 4, preferredSize.width / 4, (int) ((double) getSize().width / 1.8), (int) ((double) getSize().width / 1.8));
+//            }
 //        }
 //    }
 
