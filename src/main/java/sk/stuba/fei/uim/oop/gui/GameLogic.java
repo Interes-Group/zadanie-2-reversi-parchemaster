@@ -15,6 +15,7 @@ import java.awt.List;
 import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
 public class GameLogic extends JPanel {
@@ -92,18 +93,48 @@ public class GameLogic extends JPanel {
         }
     };
 
+    private void flipToOpponentTokens(ArrayList<Cell> tokens) {
+        for (var token : tokens) {
+            token.setTokenColor(currentPlayer.getPlayerColor());
+            opponentPlayer.getPlayerTokens().remove(token);
+//            token.setPossibleToPaint(true);
+        }
+    }
+
+    private void flipOpponentsTokens(Cell selectedNewToken) {
+        var listOfMoves = findListOfMoves(opponentPlayer, selectedNewToken);
+        // TODO there
+//        var flipTokens = findTheEndOfWayForSpecificToken(listOfMoves, selectedNewToken);
+        var newFlipTokens = flipOpponentsTokensLogic(selectedNewToken, listOfMoves);
+        flipToOpponentTokens(newFlipTokens);
+
+    }
 
     private void checkIsClicked() {
         if (possibleCells.stream().anyMatch(cell -> cell.isClicked())) {
+            specificLostColors();
             var newToken = possibleCells.stream().filter(cell -> cell.isClicked()).findFirst().get();
             round ++;
             removeHighlightedCells();
             possibleCells.clear();
             flipOpponentsTokens(newToken);
-//            start();
+//            try {
+//                Thread.sleep(ThreadLocalRandom.current().nextInt(1000, 5000));
+//            } catch (InterruptedException e) {
+//                System.out.println("aaa");
+//            }
+            start();
         }
     }
 
+    private void specificLostColors() {
+        for (var token : player1.getPlayerTokens()) {
+            token.setTokenColor(TokenColor.WHITE);
+        }
+        for (var token : player2.getPlayerTokens()) {
+            token.setTokenColor(TokenColor.BLACK);
+        }
+    }
 
     public void start() {
         currentPlayer = round % 2 == 1 ? player1 : player2;
@@ -116,13 +147,6 @@ public class GameLogic extends JPanel {
         isNewRound = false;
     }
 
-    private void flipOpponentsTokens(Cell selectedNewToken) {
-        var listOfMoves = findListOfMoves(opponentPlayer, selectedNewToken);
-        // TODO there
-//        var flipTokens = findTheEndOfWayForSpecificToken(listOfMoves, selectedNewToken);
-        var newFlipTokens = flipOpponentsTokensLogic(selectedNewToken, listOfMoves);
-        flipToOpponentTokens(newFlipTokens);
-    }
 
     private ArrayList<Cell> flipOpponentsTokensLogic(Cell currentToken, ArrayList<Move> moves) {
 //        var allPossibleWays =  Arrays.asList(Move.NORTH, Move.NORTH_EAST, Move.EAST, Move.SOUTH_EAST, Move.SOUTH, Move.SOUTH_WEST, Move.WEST, Move.NORTH_WEST);
@@ -232,13 +256,6 @@ public class GameLogic extends JPanel {
         return allFlipTokens;
     }
 
-    private void flipToOpponentTokens(ArrayList<Cell> tokens) {
-        for (var token : tokens) {
-            token.setTokenColor(currentPlayer.getPlayerColor());
-            token.setPossibleToPaint(true);
-        }
-        allCells[0][0].setTokenColor(TokenColor.BLACK);
-    }
 
 
     private void findPlayersTokens(Player currentPlayer, Player opponentPlayer) {

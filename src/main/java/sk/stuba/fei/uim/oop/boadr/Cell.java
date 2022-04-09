@@ -35,8 +35,6 @@ public class Cell extends JPanel implements MouseListener {
     @Setter
     private boolean isPossibleToPaint = false;
 
-    @Getter
-    @Setter
     private TokenColor tokenColor;
 
     @Getter
@@ -62,6 +60,15 @@ public class Cell extends JPanel implements MouseListener {
         isPossibleToPaint = false;
         tokenColor = NOT_SPECIFIED;
 
+    }
+
+    public TokenColor getTokenColor() {
+        return tokenColor;
+    }
+
+    public void setTokenColor(TokenColor tokenColor) {
+        this.tokenColor = tokenColor;
+        repaint();
     }
 
     @Override
