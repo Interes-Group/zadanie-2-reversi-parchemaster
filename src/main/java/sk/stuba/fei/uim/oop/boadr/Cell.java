@@ -73,7 +73,7 @@ public class Cell extends JPanel implements MouseListener {
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        setHighlighted(true);
+//        setHighlighted(true);
         if (isHighlighted()) {
 //            isHighlighted = false;
 //            isPossibleToPaint = true;
