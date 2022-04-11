@@ -138,7 +138,7 @@ public class Cell extends JPanel implements MouseListener {
 
     @Override
     public void mouseEntered(MouseEvent e) {
-//        setBorder(highlightedBorder);
+
         if (isHighlighted) {
             setBorder(highlightedBorder);
         }

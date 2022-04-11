@@ -8,6 +8,8 @@ import sk.stuba.fei.uim.oop.boadr.InformationPanel;
 import sk.stuba.fei.uim.oop.boadr.TokenColor;
 import sk.stuba.fei.uim.oop.controls.Move;
 import sk.stuba.fei.uim.oop.player.Player;
+import sk.stuba.fei.uim.oop.way.Way;
+import sk.stuba.fei.uim.oop.way.WayHandler;
 
 import javax.swing.*;
 import java.awt.*;
@@ -118,11 +120,6 @@ public class GameLogic extends JPanel {
             removeHighlightedCells();
             possibleCells.clear();
             flipOpponentsTokens(newToken);
-//            try {
-//                Thread.sleep(ThreadLocalRandom.current().nextInt(1000, 5000));
-//            } catch (InterruptedException e) {
-//                System.out.println("aaa");
-//            }
             start();
         }
     }
@@ -149,7 +146,6 @@ public class GameLogic extends JPanel {
 
 
     private ArrayList<Cell> flipOpponentsTokensLogic(Cell currentToken, ArrayList<Move> moves) {
-//        var allPossibleWays =  Arrays.asList(Move.NORTH, Move.NORTH_EAST, Move.EAST, Move.SOUTH_EAST, Move.SOUTH, Move.SOUTH_WEST, Move.WEST, Move.NORTH_WEST);
         var possibleTokens = new ArrayList<Cell>();
         var allFlipTokens = new ArrayList<Cell>();
         for (var move : moves) {
@@ -331,51 +327,24 @@ public class GameLogic extends JPanel {
     }
 
     private ArrayList<Move> findListOfMoves(Player opponentPlayer, Cell currentPlayerToken) {
-        var listOfMoves = new ArrayList<Move>();
+        var wayHandler = new WayHandler();
         for (var opponentPlayerToken : opponentPlayer.getPlayerTokens()) {
-            // north
-            if (currentPlayerToken.getPositionX() == opponentPlayerToken.getPositionX()
-                    && currentPlayerToken.getPositionY() == opponentPlayerToken.getPositionY() + 1) {
-                listOfMoves.add(Move.NORTH);
-            }
-            // north east
-            else if (currentPlayerToken.getPositionY() == opponentPlayerToken.getPositionY() + 1
-                    && currentPlayerToken.getPositionX() == opponentPlayerToken.getPositionX() - 1) {
-                listOfMoves.add(Move.NORTH_EAST);
-            }
-            else if (currentPlayerToken.getPositionY() == opponentPlayerToken.getPositionY()
-                    && currentPlayerToken.getPositionX() == opponentPlayerToken.getPositionX() - 1) {
-                listOfMoves.add(Move.EAST);
-            }
-            else if (currentPlayerToken.getPositionY() == opponentPlayerToken.getPositionY() - 1
-                    && currentPlayerToken.getPositionX() == opponentPlayerToken.getPositionX() - 1) {
-                listOfMoves.add(Move.SOUTH_EAST);
-            }
-            else if (currentPlayerToken.getPositionY() == opponentPlayerToken.getPositionY() - 1
-                    && currentPlayerToken.getPositionX() == opponentPlayerToken.getPositionX()) {
-                listOfMoves.add(Move.SOUTH);
-            }
-            else if (currentPlayerToken.getPositionY() == opponentPlayerToken.getPositionY() - 1
-                    && currentPlayerToken.getPositionX() == opponentPlayerToken.getPositionX() + 1) {
-                listOfMoves.add(Move.SOUTH_WEST);
-            }
-            else if (currentPlayerToken.getPositionY() == opponentPlayerToken.getPositionY()
-                    && currentPlayerToken.getPositionX() == opponentPlayerToken.getPositionX() + 1) {
-                listOfMoves.add(Move.WEST);
-            }
-            else if (currentPlayerToken.getPositionY() == opponentPlayerToken.getPositionY() + 1
-                    && currentPlayerToken.getPositionX() == opponentPlayerToken.getPositionX() + 1) {
-                listOfMoves.add(Move.NORTH_WEST);
-            }
+            var newWay = new Way(
+                    currentPlayerToken.getPositionY(),
+                    currentPlayerToken.getPositionX(),
+                    opponentPlayerToken.getPositionY(),
+                    opponentPlayerToken.getPositionX()
+            );
+            wayHandler.setHandler(newWay);
         }
-        return listOfMoves;
+        return wayHandler.getMoves();
     }
 
 
     private ArrayList<Cell> findTheEndOfWayForSpecificToken(ArrayList<Move> moves, Cell currentToken) {
         var listOfCell = new ArrayList<Cell>();
-//        var possibleTokens = new ArrayList<Cell>();
             for (var move : moves) {
+
                 if (move.equals(Move.NORTH)) {
                     for (int y = currentToken.getPositionY() - 2; y >= 0; y--) {
                         if (allCells[y][currentToken.getPositionX()].getTokenColor().equals(TokenColor.NOT_SPECIFIED)
@@ -527,73 +496,4 @@ public class GameLogic extends JPanel {
             cell.setPossibleTokenColor(TokenColor.NOT_SPECIFIED);
         }
     }
-
-//    private void findTheClosestOppositeToken(int origTokenY, int origTokenX, TokenColor origTokenColor) {
-//        for (int y = 0; y < allCells.length; y++) {
-//            for (int x = 0; x < allCells.length; x++) {
-//                if ((origTokenY == y - 1 || origTokenY == y + 1 || origTokenY == y)
-//                        && (origTokenX == x - 1 || origTokenX == x + 1 || origTokenX == x)
-//                        && !(allCells[y][x].getTokenColor().equals(TokenColor.NOT_SPECIFIED))) {
-//                    findTheClosestFreeToken(origTokenY, origTokenX, origTokenColor, y, x, allCells[y][x].getTokenColor());
-//                }
-//                if (isNewRound){
-//                    return;
-//                }
-//            }
-//        }
-//    }
-
-//    private void findTheClosestFreeToken(int origTokenY, int origTokenX, TokenColor origTokenColor, int possibleTokenY, int possibleTokenX, TokenColor possibleTokenColor) {
-//        for (int y = 0; y < allCells.length; y++) {
-//            for (int x = 0; x < allCells.length; x++) {
-//                if (!possibleCells.contains(allCells[y][x])) {
-//                    //check top
-//                    if (origTokenX == possibleTokenX && possibleTokenX == x
-//                            && origTokenY == possibleTokenY + 1 && possibleTokenY == y + 1) {
-//                        allCells[y][x].setHighlighted(true);
-//                        allCells[y][x].setPossibleTokenColor(origTokenColor);
-//                        possibleCells.add(allCells[y][x]);
-//                        break;
-//                    }
-//                    //check bottom
-//                    if (origTokenX == possibleTokenX && possibleTokenX == x
-//                            && origTokenY == possibleTokenY - 1 && possibleTokenY == y - 1) {
-//                        allCells[y][x].setHighlighted(true);
-//                        allCells[y][x].setPossibleTokenColor(origTokenColor);
-//                        possibleCells.add(allCells[y][x]);
-//                        break;
-//                    }
-//                    // check right
-//                    if (origTokenY == possibleTokenY && possibleTokenY == y
-//                            && origTokenX == possibleTokenX - 1 && possibleTokenX == x - 1) {
-//                        allCells[y][x].setHighlighted(true);
-//                        allCells[y][x].setPossibleTokenColor(origTokenColor);
-//                        possibleCells.add(allCells[y][x]);
-//                        break;
-//                    }
-//                    // check left
-//                    if (origTokenY == possibleTokenY && possibleTokenY == y
-//                            && origTokenX == possibleTokenX + 1 && possibleTokenX == x + 1) {
-//                        allCells[y][x].setHighlighted(true);
-//                        allCells[y][x].setPossibleTokenColor(origTokenColor);
-//                        possibleCells.add(allCells[y][x]);
-//                        break;
-//                    }
-//                    if (possibleCells.stream().anyMatch(cell -> cell.isClicked())) {
-//                        round++;
-//                        isNewRound = true;
-//                        possibleCells.stream().forEach(cell -> cell.setHighlighted(false));
-//                        possibleCells.removeAll(possibleCells);
-//                        return;
-//                    }
-//                }
-//            }
-//        }
-//    }
-
-
-//    private void removeOldPossibleTokens() {
-//        possibleCells.removeAll(possibleCells);
-//    }
-
 }
