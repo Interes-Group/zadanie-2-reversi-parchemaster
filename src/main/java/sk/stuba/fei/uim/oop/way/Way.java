@@ -2,31 +2,22 @@ package sk.stuba.fei.uim.oop.way;
 
 import lombok.Getter;
 import lombok.Setter;
-import sk.stuba.fei.uim.oop.controls.Move;
+import sk.stuba.fei.uim.oop.boadr.Cell;
+import sk.stuba.fei.uim.oop.controls.CellFinder;
 
 import java.util.ArrayList;
 
-public class Way implements Compass{
+public class Way implements Compass, CellFinder {
 
-    @Setter
     @Getter
-    private int currentPlayerY;
-    @Setter
+    private Cell currentToken;
     @Getter
-    private int currentPlayerX;
-    @Setter
-    @Getter
-    private int opponentPlayerY;
-    @Setter
-    @Getter
-    private int opponentPlayerX;
+    private Cell opponentToken;
 
-    public Way(int currentPlayerY, int currentPlayerX, int opponentPlayerY, int opponentPlayerX) {
-        this.currentPlayerY = currentPlayerY;
-        this.currentPlayerX = currentPlayerX;
-        this.opponentPlayerY = opponentPlayerY;
-        this.opponentPlayerX = opponentPlayerX;
 
+    public Way(Cell currentToken, Cell opponentToken) {
+        this.currentToken = currentToken;
+        this.opponentToken = opponentToken;
     }
 
     @Override
@@ -36,6 +27,16 @@ public class Way implements Compass{
 
     @Override
     public Move getMove() {
+        return null;
+    }
+
+    @Override
+    public ArrayList<Cell> findingTheEnd(Cell[][] allCells) {
+        return null;
+    }
+
+    @Override
+    public ArrayList<Cell> flipTokens(Cell[][] allCells) {
         return null;
     }
 }
