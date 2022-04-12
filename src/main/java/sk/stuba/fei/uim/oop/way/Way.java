@@ -39,4 +39,8 @@ public class Way implements Compass, CellFinder {
     public ArrayList<Cell> flipTokens(Cell[][] allCells) {
         return null;
     }
+
+    public boolean isOutOfRange(int y, int range) {
+        return y < 0 || y >= range;
+    }
 }

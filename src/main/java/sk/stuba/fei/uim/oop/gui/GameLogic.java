@@ -82,7 +82,7 @@ public class GameLogic extends JPanel {
         start();
 
         ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
-        executor.scheduleAtFixedRate(helloRunnable, 0, 3, TimeUnit.SECONDS);
+        executor.scheduleAtFixedRate(helloRunnable, 0, 1, TimeUnit.SECONDS);
 
 
     }
@@ -137,6 +137,7 @@ public class GameLogic extends JPanel {
 //        findCurrentPlayerToken(currentPlayer);
         findPlayersTokens(currentPlayer, opponentPlayer);
         findTheClosestCellsNearToCurrentPlayer(currentPlayer, opponentPlayer);
+        possibleCells = possibleCells.stream().distinct().collect(Collectors.toCollection(ArrayList::new));
         setHighlightedCells(currentPlayer);
 
         isNewRound = false;
@@ -176,15 +177,22 @@ public class GameLogic extends JPanel {
     }
 
     private ArrayList<Way> findListOfWays(Player opponentPlayer, Cell currentPlayerToken) {
-        var wayHandler = new WayHandler();
-        for (var opponentPlayerToken : opponentPlayer.getPlayerTokens()) {
-            var newWay = new Way(
-                    currentPlayerToken,
-                    opponentPlayerToken
-            );
-            wayHandler.setHandler(newWay);
+        try {
+
+            var wayHandler = new WayHandler();
+            for (var opponentPlayerToken : opponentPlayer.getPlayerTokens()) {
+                var newWay = new Way(
+                        currentPlayerToken,
+                        opponentPlayerToken
+                );
+                wayHandler.setHandler(newWay);
+            }
+            return wayHandler.getWays();
         }
-        return wayHandler.getWays();
+        catch (Exception e) {
+            System.out.println("There");
+            return null;
+        }
     }
 
 

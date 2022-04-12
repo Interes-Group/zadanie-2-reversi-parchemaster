@@ -24,39 +24,52 @@ public class South extends Way implements Compass, CellFinder {
 
     @Override
     public ArrayList<Cell> findingTheEnd(Cell[][] allCells) {
-        var listOfCells = new ArrayList<Cell>();
-        for (int y = getCurrentToken().getPositionY() + 2; y < allCells.length; y++) {
-            if (allCells[y][getCurrentToken().getPositionX()].getTokenColor().equals(TokenColor.NOT_SPECIFIED)
-                    && !allCells[y][getCurrentToken().getPositionX()].getTokenColor().equals(getCurrentToken().getTokenColor())) {
-                listOfCells.add(allCells[y][getCurrentToken().getPositionX()]);
-                break;
+        try {
+
+
+            var listOfCells = new ArrayList<Cell>();
+            for (int y = getCurrentToken().getPositionY() + 2; y < allCells.length; y++) {
+                if (allCells[y][getCurrentToken().getPositionX()].getTokenColor().equals(TokenColor.NOT_SPECIFIED)
+                        && !allCells[y][getCurrentToken().getPositionX()].getTokenColor().equals(getCurrentToken().getTokenColor())) {
+                    listOfCells.add(allCells[y][getCurrentToken().getPositionX()]);
+                    break;
+                } else if (allCells[y][getCurrentToken().getPositionX()].getTokenColor().equals(getCurrentToken().getTokenColor())) {
+                    break;
+                }
             }
-            else if (allCells[y][getCurrentToken().getPositionX()].getTokenColor().equals(getCurrentToken().getTokenColor())){
-                break;
-            }
+            return listOfCells;
         }
-        return listOfCells;
+        catch (Exception e) {
+            System.out.println("there");
+            return null;
+        }
     }
 
     @Override
     public ArrayList<Cell> flipTokens(Cell[][] allCells) {
-        var allFlipTokens = new ArrayList<Cell>();
-        var possibleTokens = new ArrayList<Cell>();
-        for (int y = getCurrentToken().getPositionY() + 1; y < allCells.length; y++) {
-            if (!allCells[y][getCurrentToken().getPositionX()].getTokenColor().equals(TokenColor.NOT_SPECIFIED)
-                    && !allCells[y][getCurrentToken().getPositionX()].getTokenColor().equals(getCurrentToken().getTokenColor())) {
-                possibleTokens.add(allCells[y][getCurrentToken().getPositionX()]);
+        try {
+
+
+            var allFlipTokens = new ArrayList<Cell>();
+            var possibleTokens = new ArrayList<Cell>();
+            for (int y = getCurrentToken().getPositionY() + 1; y < allCells.length; y++) {
+                if (!allCells[y][getCurrentToken().getPositionX()].getTokenColor().equals(TokenColor.NOT_SPECIFIED)
+                        && !allCells[y][getCurrentToken().getPositionX()].getTokenColor().equals(getCurrentToken().getTokenColor())) {
+                    possibleTokens.add(allCells[y][getCurrentToken().getPositionX()]);
+                } else if (allCells[y][getCurrentToken().getPositionX()].getTokenColor().equals(getCurrentToken().getTokenColor())) {
+                    allFlipTokens.addAll(possibleTokens);
+                    possibleTokens.clear();
+                    break;
+                } else if (allCells[y][getCurrentToken().getPositionX()].getTokenColor().equals(TokenColor.NOT_SPECIFIED)) {
+                    possibleTokens.clear();
+                    break;
+                }
             }
-            else if (allCells[y][getCurrentToken().getPositionX()].getTokenColor().equals(getCurrentToken().getTokenColor())) {
-                allFlipTokens.addAll(possibleTokens);
-                possibleTokens.clear();
-                break;
-            }
-            else if (allCells[y][getCurrentToken().getPositionX()].getTokenColor().equals(TokenColor.NOT_SPECIFIED)) {
-                possibleTokens.clear();
-                break;
-            }
+            return allFlipTokens;
         }
-        return allFlipTokens;
+        catch (Exception e) {
+            System.out.println("there");
+            return null;
+        }
     }
 }

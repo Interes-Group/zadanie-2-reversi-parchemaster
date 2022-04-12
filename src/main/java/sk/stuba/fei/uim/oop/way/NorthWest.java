@@ -24,51 +24,63 @@ public class NorthWest extends Way implements Compass, CellFinder {
 
     @Override
     public ArrayList<Cell> findingTheEnd(Cell[][] allCells) {
-        var listOfCells = new ArrayList<Cell>();
-        for (int y = getCurrentToken().getPositionY() - 2; y >= 0; y--) {
-            for (int x = getCurrentToken().getPositionX() - 2; x >= 0; x--) {
-                if (allCells[y][x].getTokenColor().equals(TokenColor.NOT_SPECIFIED)
-                        && !allCells[y][x].getTokenColor().equals(getCurrentToken().getTokenColor())) {
-                    listOfCells.add(allCells[y][x]);
-                    y = 0;
-                    break;
+        try {
+
+
+            var listOfCells = new ArrayList<Cell>();
+            int y = getCurrentToken().getPositionY() - 2;
+                for (int x = getCurrentToken().getPositionX() - 2; x >= 0 && y >= 0; x--) {
+                    if (allCells[y][x].getTokenColor().equals(TokenColor.NOT_SPECIFIED)
+                            && !allCells[y][x].getTokenColor().equals(getCurrentToken().getTokenColor())) {
+                        listOfCells.add(allCells[y][x]);
+                        y = 0;
+                        break;
+                    } else if (allCells[y][x].getTokenColor().equals(getCurrentToken().getTokenColor())) {
+                        y = 0;
+                        break;
+                    } else {
+                        y--;
+                        if (isOutOfRange(y, allCells.length)) break;
+                    }
                 }
-                else if (allCells[y][x].getTokenColor().equals(getCurrentToken().getTokenColor())) {
-                    y = 0;
-                    break;
-                }
-                else {
-                    y --;
-                }
-            }
+            return listOfCells;
         }
-        return listOfCells;
+        catch (Exception e) {
+            System.out.println("there");
+            return null;
+        }
     }
 
     @Override
     public ArrayList<Cell> flipTokens(Cell[][] allCells) {
-        var allFlipTokens = new ArrayList<Cell>();
-        var possibleTokens = new ArrayList<Cell>();
-        for (int y = getCurrentToken().getPositionY() - 1; y >= 0; y--) {
-            for (int x = getCurrentToken().getPositionX() - 1; x >= 0; x--) {
-                if (!allCells[y][x].getTokenColor().equals(TokenColor.NOT_SPECIFIED)
-                        && !allCells[y][x].getTokenColor().equals(getCurrentToken().getTokenColor())) {
-                    possibleTokens.add(allCells[y][x]);
-                    y --;
-                }
-                else if (allCells[y][x].getTokenColor().equals(getCurrentToken().getTokenColor())) {
-                    allFlipTokens.addAll(possibleTokens);
-                    possibleTokens.clear();
-                    y = 0;
-                    break;
-                }
-                else if (allCells[y][x].getTokenColor().equals(TokenColor.NOT_SPECIFIED)) {
-                    possibleTokens.clear();
-                    y = 0;
-                    break;
+        try {
+
+
+            var allFlipTokens = new ArrayList<Cell>();
+            var possibleTokens = new ArrayList<Cell>();
+            for (int y = getCurrentToken().getPositionY() - 1; y >= 0; y--) {
+                for (int x = getCurrentToken().getPositionX() - 1; x >= 0; x--) {
+                    if (!allCells[y][x].getTokenColor().equals(TokenColor.NOT_SPECIFIED)
+                            && !allCells[y][x].getTokenColor().equals(getCurrentToken().getTokenColor())) {
+                        possibleTokens.add(allCells[y][x]);
+                        y--;
+                    } else if (allCells[y][x].getTokenColor().equals(getCurrentToken().getTokenColor())) {
+                        allFlipTokens.addAll(possibleTokens);
+                        possibleTokens.clear();
+                        y = 0;
+                        break;
+                    } else if (allCells[y][x].getTokenColor().equals(TokenColor.NOT_SPECIFIED)) {
+                        possibleTokens.clear();
+                        y = 0;
+                        break;
+                    }
                 }
             }
+            return allFlipTokens;
         }
-        return allFlipTokens;
+        catch (Exception e) {
+            System.out.println("there");
+            return null;
+        }
     }
 }
