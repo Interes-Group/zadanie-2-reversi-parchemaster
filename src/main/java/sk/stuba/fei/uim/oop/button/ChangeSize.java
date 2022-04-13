@@ -4,10 +4,12 @@ import sk.stuba.fei.uim.oop.boadr.GameBoardPanel;
 import sk.stuba.fei.uim.oop.gui.GameLogic;
 
 import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
-public class ChangeSize implements ItemListener {
+public class ChangeSize implements ActionListener {
 
     private JPanel gamePanel;
     private GameLogic gameLogic;
@@ -15,9 +17,11 @@ public class ChangeSize implements ItemListener {
     private int size;
     private GameBoardPanel gameBoardPanel;
     private JComboBox changeSize;
+    private JButton restart;
 
-    public ChangeSize(GameLogic gameLogic, GameBoardPanel gameBoardPanel, JFrame frame, int size, JComboBox changeSize) {
+    public ChangeSize(GameLogic gameLogic, GameBoardPanel gameBoardPanel, JFrame frame, int size, JComboBox changeSize, JButton restart) {
         this.frame = frame;
+        this.restart = restart;
         this.gameBoardPanel = gameBoardPanel;
         this.gameLogic = gameLogic;
         this.changeSize = changeSize;
@@ -25,9 +29,17 @@ public class ChangeSize implements ItemListener {
     }
 
     @Override
-    public void itemStateChanged(ItemEvent e) {
+    public void actionPerformed(ActionEvent e) {
         if (e.getSource() == changeSize) {
             size = Integer.parseInt(changeSize.getSelectedItem().toString().split("x")[0]);
+            frame.remove(gameBoardPanel);
+            gameBoardPanel = new GameBoardPanel(size);
+            frame.add(gameBoardPanel);
+            SwingUtilities.updateComponentTreeUI(frame);
+            gameLogic = new GameLogic(gameBoardPanel);
+        }
+        if (e.getSource() == restart) {
+            size = 8;
             frame.remove(gameBoardPanel);
             gameBoardPanel = new GameBoardPanel(size);
             frame.add(gameBoardPanel);

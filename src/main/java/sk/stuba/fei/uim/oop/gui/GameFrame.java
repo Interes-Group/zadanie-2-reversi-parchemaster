@@ -10,10 +10,11 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
-public class GameFrame extends JFrame {
+public class GameFrame extends JFrame implements ActionListener{
 
     private GameLogic gameLogic;
     private JButton resetButton;
+    private JButton changeButton;
     private GameBoardPanel gameBoardPanel;
 
 
@@ -29,11 +30,18 @@ public class GameFrame extends JFrame {
         this.setLayout(new BorderLayout());
         this.gameBoardPanel = new GameBoardPanel(8);
 
+//        this.resetButton = new JButton("Reset");
+//        this.changeButton = new JButton("Change size");
+//        resetButton.addActionListener(this);
+//        changeButton.addActionListener(this);
+
         var informationPanel = new InformationPanel(gameLogic, gameBoardPanel, this);
 
 
         this.add(gameBoardPanel, BorderLayout.NORTH);
         this.add(informationPanel, BorderLayout.SOUTH);
+//        this.add(resetButton, BorderLayout.EAST);
+//        this.add(changeButton, BorderLayout.WEST);
 
 //        centreWindow(this);
         //changes size of frame
@@ -49,6 +57,26 @@ public class GameFrame extends JFrame {
 //        int x = (int) ((dimension.getWidth() - frame.getWidth()) / 2);
 //        int y = (int) ((dimension.getHeight() - frame.getHeight()) / 2);
 //        setLocation(x, y);
+    }
+
+
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == resetButton) {
+            remove(gameBoardPanel);
+            gameBoardPanel = new GameBoardPanel(8);
+            add(gameBoardPanel);
+            SwingUtilities.updateComponentTreeUI(this);
+            gameLogic = new GameLogic(gameBoardPanel);
+        }
+        if (e.getSource() == changeButton) {
+            remove(gameBoardPanel);
+            gameBoardPanel = new GameBoardPanel(12);
+            add(gameBoardPanel);
+            SwingUtilities.updateComponentTreeUI(this);
+            gameLogic = new GameLogic(gameBoardPanel);
+        }
     }
 
 //    private JFrame createFrame() {

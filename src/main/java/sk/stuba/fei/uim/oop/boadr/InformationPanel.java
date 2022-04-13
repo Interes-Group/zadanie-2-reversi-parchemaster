@@ -51,8 +51,11 @@ public class InformationPanel extends JPanel {
         add(new JSeparator());
         add(scoresLable);
 
-        restart.addActionListener(new Restart(gameLogic, gameBoardPanel, jFrame, size));
-        changeSize.addItemListener(new ChangeSize(gameLogic, gameBoardPanel, jFrame, size, changeSize));
+        var actionListener = new ChangeSize(gameLogic, gameBoardPanel, jFrame, size, changeSize, restart);
+//        restart.addActionListener(new Restart(gameLogic, gameBoardPanel, jFrame, size, restart));
+        restart.addActionListener(actionListener);
+        changeSize.addActionListener(actionListener);
+
     }
 
 
