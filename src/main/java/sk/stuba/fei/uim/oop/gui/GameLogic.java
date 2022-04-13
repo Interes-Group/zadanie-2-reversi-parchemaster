@@ -18,7 +18,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-public class GameLogic extends JPanel {
+public class GameLogic {
 
 //    private GameBoard board;
 
@@ -62,24 +62,14 @@ public class GameLogic extends JPanel {
 
     private Cell[][] allCells;
 
-    public GameLogic(int size) {
+    public GameLogic(GameBoardPanel gameBoardPanel) {
 
-
-        this.boardSize = size;
-        setLayout(new BorderLayout());
+        this.gameBoardPanel = gameBoardPanel;
 
         //WHITE
         this.player = new Player(new ArrayList<Cell>(), TokenColor.WHITE, "You");
         //BLACK
         this.computer = new Player(new ArrayList<Cell>(), TokenColor.BLACK, "Computer");
-
-        gameBoardPanel = new GameBoardPanel(size);
-//        informationPanel = new InformationPanel(player, computer, this);
-
-        this.allCells = gameBoardPanel.getAllCells();
-
-        add(gameBoardPanel, BorderLayout.NORTH);
-//        add(informationPanel, BorderLayout.SOUTH);
 
         initializeGame();
 
@@ -87,7 +77,8 @@ public class GameLogic extends JPanel {
         executor.scheduleAtFixedRate(helloRunnable, 0, 1, TimeUnit.SECONDS);
     }
 
-    private void initializeGame() {
+    public void initializeGame() {
+        this.allCells = gameBoardPanel.getAllCells();
         changePlayers();
         findPlayersTokens();
         start();

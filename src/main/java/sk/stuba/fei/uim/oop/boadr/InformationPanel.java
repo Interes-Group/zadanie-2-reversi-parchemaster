@@ -1,28 +1,36 @@
 package sk.stuba.fei.uim.oop.boadr;
 
 import sk.stuba.fei.uim.oop.button.ChangeSize;
+import sk.stuba.fei.uim.oop.button.Restart;
 import sk.stuba.fei.uim.oop.gui.GameLogic;
 import sk.stuba.fei.uim.oop.player.Player;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
 
-public class InformationPanel extends JPanel{
+public class InformationPanel extends JPanel {
     private JButton restart;
     private JComboBox changeSize;
     private JLabel currentPlayerInfo;
     private JLabel scoresLable;
     private Player player;
     private Player computer;
+    private GameLogic gameLogic;
+    private int size = 8;
+    private GameBoardPanel gameBoardPanel;
 
 
 
-    public InformationPanel(GameLogic gameLogic) {
-        this.player = gameLogic.getPlayer();
-        this.computer = gameLogic.getComputer();
+    public InformationPanel(GameLogic gameLogic, GameBoardPanel gameBoardPanel, JFrame jFrame) {
+        this.gameBoardPanel = gameBoardPanel;
+//        this.player = gameLogic.getPlayer();
+//        this.computer = gameLogic.getComputer();
+        this.gameLogic = gameLogic;
         setLayout(new FlowLayout());
         restart = new JButton("Restart");
         changeSize = new JComboBox();
@@ -43,21 +51,8 @@ public class InformationPanel extends JPanel{
         add(new JSeparator());
         add(scoresLable);
 
-
-        // TODO doesn't work for restart
-//        restart.addActionListener(new ChangeSize(gameLogic));
-        changeSize.addActionListener(new ChangeSize(gameLogic));
-
-        changeSize.addItemListener(new ItemListener() {
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-                if (e.getSource() == changeSize) {
-
-                    gameLogic.setBoardSize(Integer.parseInt(changeSize.getSelectedItem().toString().split("x")[0]));
-//                    gameLogic.setBoardSize(newSizeBoard);
-                }
-            }
-        });
+        restart.addActionListener(new Restart(gameLogic, gameBoardPanel, jFrame, size));
+        changeSize.addItemListener(new ChangeSize(gameLogic, gameBoardPanel, jFrame, size, changeSize));
     }
 
 
@@ -67,4 +62,5 @@ public class InformationPanel extends JPanel{
         changeSize.addItem("10x10");
         changeSize.addItem("12x12");
     }
+
 }
