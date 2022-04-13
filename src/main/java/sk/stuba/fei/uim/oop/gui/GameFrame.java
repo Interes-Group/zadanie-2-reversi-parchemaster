@@ -1,5 +1,7 @@
 package sk.stuba.fei.uim.oop.gui;
 
+import sk.stuba.fei.uim.oop.boadr.InformationPanel;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
@@ -22,7 +24,10 @@ public class GameFrame extends JFrame {
 
 
         this.gameLogic = new GameLogic(8);
-        add(gameLogic);
+        var informationPanel = new InformationPanel(gameLogic);
+        add(gameLogic, BorderLayout.NORTH);
+        add(informationPanel, BorderLayout.SOUTH);
+
 
         centreWindow(this);
         //changes size of frame

@@ -21,6 +21,7 @@ public class ChangeSize implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         gameLogic.remove(gamePanel);
         gamePanel = new GameBoardPanel(gameLogic.getBoardSize());
+//        gameLogic = new GameLogic(gameLogic.getBoardSize());
         gameLogic.add(gamePanel);
         gameLogic.revalidate();
         gameLogic.repaint();

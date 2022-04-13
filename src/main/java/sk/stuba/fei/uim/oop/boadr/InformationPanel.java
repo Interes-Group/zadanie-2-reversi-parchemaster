@@ -20,9 +20,9 @@ public class InformationPanel extends JPanel{
 
 
 
-    public InformationPanel(Player player, Player computer, GameLogic gameLogic) {
-        this.player = player;
-        this.computer = computer;
+    public InformationPanel(GameLogic gameLogic) {
+        this.player = gameLogic.getPlayer();
+        this.computer = gameLogic.getComputer();
         setLayout(new FlowLayout());
         restart = new JButton("Restart");
         changeSize = new JComboBox();
@@ -59,7 +59,6 @@ public class InformationPanel extends JPanel{
             }
         });
     }
-
 
 
     private void setComboBox() {

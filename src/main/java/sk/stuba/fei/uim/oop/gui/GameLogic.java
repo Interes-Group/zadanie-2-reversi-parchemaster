@@ -74,12 +74,12 @@ public class GameLogic extends JPanel {
         this.computer = new Player(new ArrayList<Cell>(), TokenColor.BLACK, "Computer");
 
         gameBoardPanel = new GameBoardPanel(size);
-        informationPanel = new InformationPanel(player, computer, this);
+//        informationPanel = new InformationPanel(player, computer, this);
 
         this.allCells = gameBoardPanel.getAllCells();
 
         add(gameBoardPanel, BorderLayout.NORTH);
-        add(informationPanel, BorderLayout.SOUTH);
+//        add(informationPanel, BorderLayout.SOUTH);
 
         initializeGame();
 
