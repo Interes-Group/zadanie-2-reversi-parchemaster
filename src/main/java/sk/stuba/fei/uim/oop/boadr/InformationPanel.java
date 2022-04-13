@@ -1,16 +1,13 @@
 package sk.stuba.fei.uim.oop.boadr;
 
-import sk.stuba.fei.uim.oop.button.ChangeSize;
-import sk.stuba.fei.uim.oop.button.Restart;
+import sk.stuba.fei.uim.oop.button.ActionButtons;
 import sk.stuba.fei.uim.oop.gui.GameLogic;
 import sk.stuba.fei.uim.oop.player.Player;
 
 import javax.swing.*;
+import javax.swing.event.AncestorEvent;
+import javax.swing.event.AncestorListener;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 
 
 public class InformationPanel extends JPanel {
@@ -28,8 +25,8 @@ public class InformationPanel extends JPanel {
 
     public InformationPanel(GameLogic gameLogic, GameBoardPanel gameBoardPanel, JFrame jFrame) {
         this.gameBoardPanel = gameBoardPanel;
-//        this.player = gameLogic.getPlayer();
-//        this.computer = gameLogic.getComputer();
+        this.player = gameLogic.getPlayer();
+        this.computer = gameLogic.getComputer();
         this.gameLogic = gameLogic;
         setLayout(new FlowLayout());
         restart = new JButton("Restart");
@@ -38,9 +35,9 @@ public class InformationPanel extends JPanel {
         scoresLable = new JLabel();
         setComboBox();
 
-//        currentPlayerInfo.setText("Current player is " + player.getName().toLowerCase());
-//        scoresLable.setText("Computer has: " + computer.getPlayerTokens().size()
-//                + "    You have: " + player.getPlayerTokens().size());
+        currentPlayerInfo.setText("Current player is " + player.getName().toLowerCase());
+        scoresLable.setText("Computer has: " + computer.getPlayerTokens().size()
+                + "    You have: " + player.getPlayerTokens().size());
 
 
         add(restart);
@@ -51,8 +48,7 @@ public class InformationPanel extends JPanel {
         add(new JSeparator());
         add(scoresLable);
 
-        var actionListener = new ChangeSize(gameLogic, gameBoardPanel, jFrame, size, changeSize, restart);
-//        restart.addActionListener(new Restart(gameLogic, gameBoardPanel, jFrame, size, restart));
+        var actionListener = new ActionButtons(gameLogic, gameBoardPanel, jFrame, size, changeSize, restart);
         restart.addActionListener(actionListener);
         changeSize.addActionListener(actionListener);
 

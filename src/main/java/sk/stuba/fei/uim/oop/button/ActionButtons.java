@@ -9,7 +9,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
-public class ChangeSize implements ActionListener {
+public class ActionButtons implements ActionListener {
 
     private JPanel gamePanel;
     private GameLogic gameLogic;
@@ -19,7 +19,7 @@ public class ChangeSize implements ActionListener {
     private JComboBox changeSize;
     private JButton restart;
 
-    public ChangeSize(GameLogic gameLogic, GameBoardPanel gameBoardPanel, JFrame frame, int size, JComboBox changeSize, JButton restart) {
+    public ActionButtons(GameLogic gameLogic, GameBoardPanel gameBoardPanel, JFrame frame, int size, JComboBox changeSize, JButton restart) {
         this.frame = frame;
         this.restart = restart;
         this.gameBoardPanel = gameBoardPanel;
