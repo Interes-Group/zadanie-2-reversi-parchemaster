@@ -34,8 +34,11 @@ public class GameLogic extends JPanel {
     @Getter
     @Setter
     private int round;
-    private Player player1;
-    private Player player2;
+
+    @Getter
+    private Player player;
+    @Getter
+    private Player computer;
 
     @Getter
     @Setter
@@ -65,96 +68,44 @@ public class GameLogic extends JPanel {
         this.boardSize = size;
         setLayout(new BorderLayout());
 
+        //WHITE
+        this.player = new Player(new ArrayList<Cell>(), TokenColor.WHITE, "You");
+        //BLACK
+        this.computer = new Player(new ArrayList<Cell>(), TokenColor.BLACK, "Computer");
+
         gameBoardPanel = new GameBoardPanel(size);
-        informationPanel = new InformationPanel(this);
+        informationPanel = new InformationPanel(player, computer, this);
 
         this.allCells = gameBoardPanel.getAllCells();
 
         add(gameBoardPanel, BorderLayout.NORTH);
         add(informationPanel, BorderLayout.SOUTH);
 
-        //WHITE
-        this.player1 = new Player(new ArrayList<Cell>(), 2, TokenColor.WHITE);
-        //BLACK
-        this.player2 = new Player(new ArrayList<Cell>(), 2, TokenColor.BLACK);
-
-
-        start();
+        initializeGame();
 
         ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
         executor.scheduleAtFixedRate(helloRunnable, 0, 1, TimeUnit.SECONDS);
-
-
     }
 
-    Runnable helloRunnable = new Runnable() {
-        public void run() {
-            checkIsClicked();
-        }
-    };
-
-    private void flipToOpponentTokens(ArrayList<Cell> tokens) {
-        for (var token : tokens) {
-            token.setTokenColor(currentPlayer.getPlayerColor());
-            opponentPlayer.getPlayerTokens().remove(token);
-//            token.setPossibleToPaint(true);
-        }
+    private void initializeGame() {
+        changePlayers();
+        findPlayersTokens();
+        start();
     }
 
-    private void flipOpponentsTokens(Cell selectedNewToken) {
-        var listOfMoves = findListOfWays(opponentPlayer, selectedNewToken);
-        // TODO there
-//        var flipTokens = findTheEndOfWayForSpecificToken(listOfMoves, selectedNewToken);
-        var newFlipTokens = flipOpponentsTokensLogic(listOfMoves);
-        flipToOpponentTokens(newFlipTokens);
-
-    }
-
-    private void checkIsClicked() {
-        if (possibleCells.stream().anyMatch(cell -> cell.isClicked())) {
-            specificLostColors();
-            var newToken = possibleCells.stream().filter(cell -> cell.isClicked()).findFirst().get();
-            round ++;
-            removeHighlightedCells();
-            possibleCells.clear();
-            flipOpponentsTokens(newToken);
-            start();
-        }
-    }
-
-    private void specificLostColors() {
-        for (var token : player1.getPlayerTokens()) {
-            token.setTokenColor(TokenColor.WHITE);
-        }
-        for (var token : player2.getPlayerTokens()) {
-            token.setTokenColor(TokenColor.BLACK);
-        }
+    private void changePlayers() {
+        currentPlayer = round % 2 == 1 ? player : computer;
+        opponentPlayer = round % 2 == 0 ? player : computer;
+        round++;
     }
 
     public void start() {
-        currentPlayer = round % 2 == 1 ? player1 : player2;
-        opponentPlayer = round % 2 == 0 ? player1 : player2;
-//        findCurrentPlayerToken(currentPlayer);
-        findPlayersTokens(currentPlayer, opponentPlayer);
-        findTheClosestCellsNearToCurrentPlayer(currentPlayer, opponentPlayer);
-        possibleCells = possibleCells.stream().distinct().collect(Collectors.toCollection(ArrayList::new));
-        setHighlightedCells(currentPlayer);
-
+        findTheClosestCellsNearToCurrentPlayer();
+        setHighlightedCells();
         isNewRound = false;
     }
 
-
-    private ArrayList<Cell> flipOpponentsTokensLogic(ArrayList<Way> ways) {
-        var allFlipTokens = new ArrayList<Cell>();
-        for (var way : ways) {
-            allFlipTokens.addAll(way.flipTokens(allCells));
-        }
-        return allFlipTokens;
-    }
-
-
-
-    private void findPlayersTokens(Player currentPlayer, Player opponentPlayer) {
+    private void findPlayersTokens() {
         for (int y = 0; y < allCells.length; y++) {
             for (int x = 0; x < allCells.length; x++) {
                 if (allCells[y][x].getTokenColor() == currentPlayer.getPlayerColor()
@@ -169,10 +120,73 @@ public class GameLogic extends JPanel {
         }
     }
 
-    private void findTheClosestCellsNearToCurrentPlayer(Player currentPlayer, Player opponentPlayer) {
+    private void findTheClosestCellsNearToCurrentPlayer() {
         for (var currentPlayerToken : currentPlayer.getPlayerTokens()) {
             var listOfWays = findListOfWays(opponentPlayer, currentPlayerToken);
+            //TODO if listOfWays == null => finish the game
             possibleCells.addAll(findTheEndOfWayForSpecificToken(listOfWays));
+        }
+        possibleCells = possibleCells.stream().distinct().collect(Collectors.toCollection(ArrayList::new));
+    }
+
+    private ArrayList<Cell> findTheEndOfWayForSpecificToken(ArrayList<Way> ways) {
+        var listOfCells = new ArrayList<Cell>();
+        for (var way : ways) {
+            listOfCells.addAll(way.findingTheEnd(allCells));
+        }
+        return listOfCells.stream().distinct().collect(Collectors.toCollection(ArrayList::new));
+    }
+
+    private void setHighlightedCells() {
+        for (var cell : possibleCells) {
+            cell.setHighlighted(true);
+            cell.setPossibleTokenColor(currentPlayer.getPlayerColor());
+            cell.highlightCell();
+        }
+    }
+
+    // waiting till current player press any possible cell
+    Runnable helloRunnable = new Runnable() {
+        public void run() {
+            checkIsClicked();
+        }
+    };
+
+    // if current player press possible cell then flip opponents tokens
+    private void checkIsClicked() {
+        if (possibleCells.stream().anyMatch(Cell::isClicked)) {
+            specifyLostColors();
+            var newToken = possibleCells.stream().filter(Cell::isClicked).findFirst().get();
+            currentPlayer.getPlayerTokens().add(newToken);
+            removeHighlightedCells();
+            flipToOpponentTokens(newToken);
+            changePlayers();
+            start();
+        }
+    }
+
+    // some tokens lost their TokenColor wile program waiting, so this function specify lost tokens colors
+    private void specifyLostColors() {
+        player.getPlayerTokens().forEach(token -> token.setTokenColor(TokenColor.WHITE));
+        computer.getPlayerTokens().forEach(token -> token.setTokenColor(TokenColor.BLACK));
+    }
+
+    private void removeHighlightedCells() {
+        possibleCells.forEach(cell -> {
+            cell.setHighlighted(false);
+            cell.setPossibleTokenColor(TokenColor.NOT_SPECIFIED);
+            cell.removeHighlightCell();
+        });
+        possibleCells.clear();
+    }
+
+    private void flipToOpponentTokens(Cell selectedNewToken) {
+        var listOfMoves = findListOfWays(opponentPlayer, selectedNewToken);
+        var newFlipTokens = flipOpponentsTokensLogic(listOfMoves);
+        for (var token : newFlipTokens) {
+            token.setTokenColor(currentPlayer.getPlayerColor());
+            opponentPlayer.getPlayerTokens().remove(token);
+            currentPlayer.getPlayerTokens().add(token);
         }
     }
 
@@ -195,26 +209,11 @@ public class GameLogic extends JPanel {
         }
     }
 
-
-    private ArrayList<Cell> findTheEndOfWayForSpecificToken(ArrayList<Way> ways) {
-        var listOfCells = new ArrayList<Cell>();
+    private ArrayList<Cell> flipOpponentsTokensLogic(ArrayList<Way> ways) {
+        var allFlipTokens = new ArrayList<Cell>();
         for (var way : ways) {
-            listOfCells.addAll(way.findingTheEnd(allCells));
+            allFlipTokens.addAll(way.flipTokens(allCells));
         }
-        return listOfCells.stream().distinct().collect(Collectors.toCollection(ArrayList::new));
-    }
-
-    private void setHighlightedCells(Player currentPlayer) {
-        for (var cell : possibleCells) {
-            cell.setHighlighted(true);
-            cell.setPossibleTokenColor(currentPlayer.getPlayerColor());
-        }
-    }
-
-    private void removeHighlightedCells() {
-        for (var cell : possibleCells) {
-            cell.setHighlighted(false);
-            cell.setPossibleTokenColor(TokenColor.NOT_SPECIFIED);
-        }
+        return allFlipTokens;
     }
 }

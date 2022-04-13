@@ -11,12 +11,13 @@ import java.awt.event.*;
 
 import static sk.stuba.fei.uim.oop.boadr.TokenColor.NOT_SPECIFIED;
 
-public class Cell extends JPanel implements MouseListener {
+public class Cell extends JPanel implements MouseListener, Painter {
 
     private Dimension preferredSize;
 
     private Border highlightedBorder = BorderFactory.createLineBorder(Color.cyan,2);
     private Border blackBorder = BorderFactory.createLineBorder(Color.BLACK);
+    private Border possibleBorder = BorderFactory.createLineBorder(Color.WHITE);
     @Getter
     @Setter
     private int positionX;
@@ -150,6 +151,19 @@ public class Cell extends JPanel implements MouseListener {
         if (!isClicked) {
             tokenColor = NOT_SPECIFIED;
         }
+        if (isHighlighted) setBorder(possibleBorder);
+
     }
 
+
+    @Override
+    public void highlightCell() {
+//        if (this.getBorder().equals(possibleBorder)) setBorder(blackBorder);
+        setBorder(possibleBorder);
+    }
+
+    public void removeHighlightCell() {
+//        if (this.getBorder().equals(possibleBorder)) setBorder(blackBorder);
+        setBorder(blackBorder);
+    }
 }

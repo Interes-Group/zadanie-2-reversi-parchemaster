@@ -11,15 +11,20 @@ public class Player {
     @Setter
     @Getter
     private ArrayList<Cell> playerTokens;
+    @Getter
     private int countCell;
     @Setter
     @Getter
     private TokenColor playerColor;
 
-    public Player(ArrayList<Cell> playerCells, int countCell, TokenColor playerColor) {
+    @Getter
+    private String name;
+
+    public Player(ArrayList<Cell> playerCells, TokenColor playerColor, String name) {
+        this.name = name;
         this.playerColor = playerColor;
         this.playerTokens = playerCells;
-        this.countCell = countCell;
+        this.countCell = playerTokens.size();
     }
 
 }

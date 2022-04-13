@@ -58,8 +58,8 @@ public class NorthWest extends Way implements Compass, CellFinder {
 
             var allFlipTokens = new ArrayList<Cell>();
             var possibleTokens = new ArrayList<Cell>();
-            for (int y = getCurrentToken().getPositionY() - 1; y >= 0; y--) {
-                for (int x = getCurrentToken().getPositionX() - 1; x >= 0; x--) {
+            int y = getCurrentToken().getPositionY() - 1;
+                for (int x = getCurrentToken().getPositionX() - 1; x >= 0 && y >= 0; x--) {
                     if (!allCells[y][x].getTokenColor().equals(TokenColor.NOT_SPECIFIED)
                             && !allCells[y][x].getTokenColor().equals(getCurrentToken().getTokenColor())) {
                         possibleTokens.add(allCells[y][x]);
@@ -75,7 +75,6 @@ public class NorthWest extends Way implements Compass, CellFinder {
                         break;
                     }
                 }
-            }
             return allFlipTokens;
         }
         catch (Exception e) {

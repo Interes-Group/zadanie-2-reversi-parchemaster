@@ -2,6 +2,7 @@ package sk.stuba.fei.uim.oop.boadr;
 
 import sk.stuba.fei.uim.oop.button.ChangeSize;
 import sk.stuba.fei.uim.oop.gui.GameLogic;
+import sk.stuba.fei.uim.oop.player.Player;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,26 +13,35 @@ import java.awt.event.ItemListener;
 public class InformationPanel extends JPanel{
     private JButton restart;
     private JComboBox changeSize;
-    private JLabel player1Info;
-    private JLabel player2Info;
+    private JLabel currentPlayerInfo;
+    private JLabel scoresLable;
+    private Player player;
+    private Player computer;
 
 
 
-    public InformationPanel(GameLogic gameLogic) {
+    public InformationPanel(Player player, Player computer, GameLogic gameLogic) {
+        this.player = player;
+        this.computer = computer;
         setLayout(new FlowLayout());
         restart = new JButton("Restart");
         changeSize = new JComboBox();
-        player1Info = new JLabel("you: score");
-        player2Info = new JLabel("computer: score");
+        currentPlayerInfo = new JLabel();
+        scoresLable = new JLabel();
         setComboBox();
+
+//        currentPlayerInfo.setText("Current player is " + player.getName().toLowerCase());
+//        scoresLable.setText("Computer has: " + computer.getPlayerTokens().size()
+//                + "    You have: " + player.getPlayerTokens().size());
+
 
         add(restart);
         add(new JSeparator());
         add(changeSize);
         add(new JSeparator());
-        add(player1Info);
+        add(currentPlayerInfo);
         add(new JSeparator());
-        add(player2Info);
+        add(scoresLable);
 
 
         // TODO doesn't work for restart
