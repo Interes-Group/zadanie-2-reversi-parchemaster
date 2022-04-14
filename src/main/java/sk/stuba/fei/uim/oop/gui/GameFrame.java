@@ -22,6 +22,8 @@ public class GameFrame extends JFrame {
     private JLabel computerScore = new JLabel();
     @Getter
     private JLabel currentPlayerLabel = new JLabel();
+    @Getter
+    private JDialog finishDialog = new JDialog(this, "Game is finished", true);
 
 
 
@@ -36,8 +38,8 @@ public class GameFrame extends JFrame {
         this.setSize(600, 500);
         this.setLayout(new BorderLayout());
         this.gameBoardPanel = new GameBoardPanel(8);
-        gameLogic = new GameLogic(gameBoardPanel, playerScore, computerScore, currentPlayerLabel);
-        var informationPanel = new InformationPanel(gameLogic, gameBoardPanel, this);
+        gameLogic = new GameLogic(gameBoardPanel, playerScore, computerScore, currentPlayerLabel, finishDialog);
+        var informationPanel = new InformationPanel(gameLogic, gameBoardPanel, this, finishDialog);
 
 
 
@@ -53,9 +55,9 @@ public class GameFrame extends JFrame {
     }
 
     public static void centreWindow(Window frame) {
-//        Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
-//        int x = (int) ((dimension.getWidth() - frame.getWidth()) / 2);
-//        int y = (int) ((dimension.getHeight() - frame.getHeight()) / 2);
-//        setLocation(x, y);
+        Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
+        int x = (int) ((dimension.getWidth() - frame.getWidth()) / 2);
+        int y = (int) ((dimension.getHeight() - frame.getHeight()) / 2);
+        frame.setLocation(x, y);
     }
 }

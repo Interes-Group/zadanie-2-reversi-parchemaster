@@ -19,8 +19,6 @@ import java.util.stream.Collectors;
 
 public class GameLogic {
 
-//    private GameBoard board;
-
     @Getter
     @Setter
     private int boardSize;
@@ -65,10 +63,12 @@ public class GameLogic {
     private JLabel computerScore;
     @Getter
     private JLabel currentPlayerLabel;
+    @Getter
+    private JDialog finishDialog;
 
     private Cell[][] allCells;
 
-    public GameLogic(GameBoardPanel gameBoardPanel, JLabel playerScore, JLabel computerScore, JLabel currentPlayerLabel) {
+    public GameLogic(GameBoardPanel gameBoardPanel, JLabel playerScore, JLabel computerScore, JLabel currentPlayerLabel, JDialog finishDialog) {
         this.gameBoardPanel = gameBoardPanel;
         //WHITE
         this.player = new Player(new ArrayList<Cell>(), TokenColor.WHITE, "You");
@@ -82,6 +82,8 @@ public class GameLogic {
         computerScore.setText("Computer has " + getComputer().getPlayerTokens().size());
 
         this.currentPlayerLabel = currentPlayerLabel;
+
+        this.finishDialog = finishDialog;
 
 
         initializeGame();
@@ -109,6 +111,13 @@ public class GameLogic {
         findTheClosestCellsNearToCurrentPlayer();
         setHighlightedCells();
         isNewRound = false;
+        checkWinner();
+    }
+
+    private void checkWinner() {
+        if (possibleCells.size() == 0) {
+            finishDialog.setVisible(true);
+        }
     }
 
     private void findPlayersTokens() {
