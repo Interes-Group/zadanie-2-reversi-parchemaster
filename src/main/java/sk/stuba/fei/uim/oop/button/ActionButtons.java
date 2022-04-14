@@ -6,8 +6,6 @@ import sk.stuba.fei.uim.oop.gui.GameLogic;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 
 public class ActionButtons implements ActionListener {
 
@@ -36,7 +34,7 @@ public class ActionButtons implements ActionListener {
             gameBoardPanel = new GameBoardPanel(size);
             frame.add(gameBoardPanel);
             SwingUtilities.updateComponentTreeUI(frame);
-            gameLogic = new GameLogic(gameBoardPanel, gameLogic.getPlayerScore(), gameLogic.getComputerScore(), gameLogic.getCurrentPlayerLabel(), gameLogic.getFinishDialog());
+            gameLogic = new GameLogic(gameBoardPanel, gameLogic.getPlayerScore(), gameLogic.getComputerScore(), gameLogic.getCurrentPlayerLabel(), gameLogic.getFinishDialog(), gameLogic.getWinnerLabel());
         }
         if (e.getSource() == restart) {
             size = 8;
@@ -44,7 +42,7 @@ public class ActionButtons implements ActionListener {
             gameBoardPanel = new GameBoardPanel(size);
             frame.add(gameBoardPanel);
             SwingUtilities.updateComponentTreeUI(frame);
-            gameLogic = new GameLogic(gameBoardPanel, gameLogic.getPlayerScore(), gameLogic.getComputerScore(), gameLogic.getCurrentPlayerLabel(), gameLogic.getFinishDialog());
+            gameLogic = new GameLogic(gameBoardPanel, gameLogic.getPlayerScore(), gameLogic.getComputerScore(), gameLogic.getCurrentPlayerLabel(), gameLogic.getFinishDialog(), gameLogic.getWinnerLabel());
         }
     }
 }

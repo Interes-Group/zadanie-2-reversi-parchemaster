@@ -3,16 +3,15 @@ package sk.stuba.fei.uim.oop.gui;
 import lombok.Getter;
 import sk.stuba.fei.uim.oop.boadr.GameBoardPanel;
 import sk.stuba.fei.uim.oop.boadr.InformationPanel;
+import sk.stuba.fei.uim.oop.button.KeyButtonListener;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.awt.event.*;
 
 public class GameFrame extends JFrame {
 
+    private static final int IFW = JComponent.WHEN_IN_FOCUSED_WINDOW;
     private GameLogic gameLogic;
     private GameBoardPanel gameBoardPanel;
 
@@ -24,6 +23,10 @@ public class GameFrame extends JFrame {
     private JLabel currentPlayerLabel = new JLabel();
     @Getter
     private JDialog finishDialog = new JDialog(this, "Game is finished", true);
+    @Getter
+    private JLabel winnerName = new JLabel();
+    @Getter
+    private KeyButtonListener keyButtonListener;
 
 
 
@@ -38,17 +41,16 @@ public class GameFrame extends JFrame {
         this.setSize(600, 500);
         this.setLayout(new BorderLayout());
         this.gameBoardPanel = new GameBoardPanel(8);
-        gameLogic = new GameLogic(gameBoardPanel, playerScore, computerScore, currentPlayerLabel, finishDialog);
+        gameLogic = new GameLogic(gameBoardPanel, playerScore, computerScore, currentPlayerLabel, finishDialog, winnerName);
         var informationPanel = new InformationPanel(gameLogic, gameBoardPanel, this, finishDialog);
 
 
+//        keyButtonListener = new KeyButtonListener();
+//        addKeyListener(keyButtonListener);
 
         this.add(gameBoardPanel, BorderLayout.NORTH);
         this.add(informationPanel, BorderLayout.SOUTH);
 
-
-//        centreWindow(this);
-        //changes size of frame
         setResizable(true);
         pack();
         setVisible(true);

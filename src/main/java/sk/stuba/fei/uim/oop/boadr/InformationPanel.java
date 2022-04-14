@@ -1,11 +1,14 @@
 package sk.stuba.fei.uim.oop.boadr;
 
 import sk.stuba.fei.uim.oop.button.ActionButtons;
+import sk.stuba.fei.uim.oop.button.KeyButtonListener;
 import sk.stuba.fei.uim.oop.gui.GameFrame;
 import sk.stuba.fei.uim.oop.gui.GameLogic;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 
 public class InformationPanel extends JPanel {
@@ -28,14 +31,21 @@ public class InformationPanel extends JPanel {
         var computerScore = new JLabel();
         setComboBox();
 
-        var winner = gameLogic.getPlayer().getPlayerTokens().size() > gameLogic.getComputer().getPlayerTokens().size()
-                ? gameLogic.getPlayer().getName() : gameLogic.getComputer().getName();
+        // wining window
+        var winnerLabel = new JLabel();
+        winnerLabel = gameLogic.getWinnerLabel();
+
         var winnerPanel = new JPanel();
+        winnerPanel.add(winnerLabel);
         finishDialog.setLayout(new BorderLayout());
-        winnerPanel.add(new JLabel(winner + " won tha game"));
         finishDialog.add(winnerPanel, BorderLayout.CENTER);
         finishDialog.setSize(300, 100);
         GameFrame.centreWindow(finishDialog);
+        //
+
+
+        // key listener
+//        var keyButtonListener = new KeyButtonListener(this);
 
         currentPlayerInfo = gameLogic.getCurrentPlayerLabel();
         playerLabel = gameLogic.getPlayerScore();

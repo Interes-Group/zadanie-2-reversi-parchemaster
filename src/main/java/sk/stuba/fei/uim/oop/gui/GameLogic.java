@@ -65,11 +65,14 @@ public class GameLogic {
     private JLabel currentPlayerLabel;
     @Getter
     private JDialog finishDialog;
+    @Getter
+    private JLabel winnerLabel;
 
     private Cell[][] allCells;
 
-    public GameLogic(GameBoardPanel gameBoardPanel, JLabel playerScore, JLabel computerScore, JLabel currentPlayerLabel, JDialog finishDialog) {
+    public GameLogic(GameBoardPanel gameBoardPanel, JLabel playerScore, JLabel computerScore, JLabel currentPlayerLabel, JDialog finishDialog, JLabel winnerName) {
         this.gameBoardPanel = gameBoardPanel;
+        this.winnerLabel = winnerName;
         //WHITE
         this.player = new Player(new ArrayList<Cell>(), TokenColor.WHITE, "You");
         //BLACK
@@ -111,13 +114,28 @@ public class GameLogic {
         findTheClosestCellsNearToCurrentPlayer();
         setHighlightedCells();
         isNewRound = false;
-        checkWinner();
+        checkFinishGame();
     }
 
-    private void checkWinner() {
+    private void checkFinishGame() {
         if (possibleCells.size() == 0) {
+            winnerLabel.setText(findWinner());
             finishDialog.setVisible(true);
         }
+    }
+
+    public String findWinner() {
+        String winnerString;
+        if (getPlayer().getPlayerTokens().size() > getComputer().getPlayerTokens().size()) {
+            winnerString = getPlayer().getName() + " won tha game";
+        }
+        else if (getPlayer().getPlayerTokens().size() < getComputer().getPlayerTokens().size()) {
+            winnerString = getComputer().getName() + " won tha game";
+        }
+        else {
+            winnerString = "Draw won tha game\"";
+        }
+        return winnerString;
     }
 
     private void findPlayersTokens() {
