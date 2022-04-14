@@ -11,7 +11,6 @@ import sk.stuba.fei.uim.oop.way.Way;
 import sk.stuba.fei.uim.oop.way.WayHandler;
 
 import javax.swing.*;
-import java.awt.*;
 import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -60,22 +59,37 @@ public class GameLogic {
     @Setter
     private Player opponentPlayer;
 
+    @Getter
+    private JLabel playerScore;
+    @Getter
+    private JLabel computerScore;
+    @Getter
+    private JLabel currentPlayerLabel;
+
     private Cell[][] allCells;
 
-    public GameLogic(GameBoardPanel gameBoardPanel) {
-
+    public GameLogic(GameBoardPanel gameBoardPanel, JLabel playerScore, JLabel computerScore, JLabel currentPlayerLabel) {
         this.gameBoardPanel = gameBoardPanel;
-
         //WHITE
         this.player = new Player(new ArrayList<Cell>(), TokenColor.WHITE, "You");
         //BLACK
         this.computer = new Player(new ArrayList<Cell>(), TokenColor.BLACK, "Computer");
+
+        this.playerScore = playerScore;
+        playerScore.setText("Player has: " + getPlayer().getPlayerTokens().size());
+
+        this.computerScore = computerScore;
+        computerScore.setText("Computer has " + getComputer().getPlayerTokens().size());
+
+        this.currentPlayerLabel = currentPlayerLabel;
+
 
         initializeGame();
 
         ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
         executor.scheduleAtFixedRate(helloRunnable, 0, 1, TimeUnit.SECONDS);
     }
+
 
     public void initializeGame() {
         this.allCells = gameBoardPanel.getAllCells();
@@ -87,6 +101,7 @@ public class GameLogic {
     private void changePlayers() {
         currentPlayer = round % 2 == 1 ? player : computer;
         opponentPlayer = round % 2 == 0 ? player : computer;
+        currentPlayerLabel.setText("Current player is: " + currentPlayer.getName());
         round++;
     }
 
@@ -152,6 +167,8 @@ public class GameLogic {
             removeHighlightedCells();
             flipToOpponentTokens(newToken);
             changePlayers();
+            playerScore.setText("Player has: " + getPlayer().getPlayerTokens().size());
+            computerScore.setText("Computer has " + getComputer().getPlayerTokens().size());
             start();
         }
     }

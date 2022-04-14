@@ -1,5 +1,6 @@
 package sk.stuba.fei.uim.oop.gui;
 
+import lombok.Getter;
 import sk.stuba.fei.uim.oop.boadr.GameBoardPanel;
 import sk.stuba.fei.uim.oop.boadr.InformationPanel;
 
@@ -15,6 +16,14 @@ public class GameFrame extends JFrame {
     private GameLogic gameLogic;
     private GameBoardPanel gameBoardPanel;
 
+    @Getter
+    private JLabel playerScore = new JLabel();
+    @Getter
+    private JLabel computerScore = new JLabel();
+    @Getter
+    private JLabel currentPlayerLabel = new JLabel();
+
+
 
     public GameFrame() {
 
@@ -27,9 +36,9 @@ public class GameFrame extends JFrame {
         this.setSize(600, 500);
         this.setLayout(new BorderLayout());
         this.gameBoardPanel = new GameBoardPanel(8);
-        gameLogic = new GameLogic(gameBoardPanel);
-
+        gameLogic = new GameLogic(gameBoardPanel, playerScore, computerScore, currentPlayerLabel);
         var informationPanel = new InformationPanel(gameLogic, gameBoardPanel, this);
+
 
 
         this.add(gameBoardPanel, BorderLayout.NORTH);

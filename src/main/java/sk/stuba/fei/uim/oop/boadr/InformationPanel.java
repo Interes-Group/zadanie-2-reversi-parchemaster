@@ -2,21 +2,14 @@ package sk.stuba.fei.uim.oop.boadr;
 
 import sk.stuba.fei.uim.oop.button.ActionButtons;
 import sk.stuba.fei.uim.oop.gui.GameLogic;
-import sk.stuba.fei.uim.oop.player.Player;
 
 import javax.swing.*;
-import javax.swing.event.AncestorEvent;
-import javax.swing.event.AncestorListener;
 import java.awt.*;
 
 
 public class InformationPanel extends JPanel {
-    private JButton restart;
     private JComboBox changeSize;
-    private JLabel currentPlayerInfo;
-    private JLabel scoresLable;
-    private Player player;
-    private Player computer;
+    private JLabel playerLabel;
     private GameLogic gameLogic;
     private int size = 8;
     private GameBoardPanel gameBoardPanel;
@@ -25,28 +18,30 @@ public class InformationPanel extends JPanel {
 
     public InformationPanel(GameLogic gameLogic, GameBoardPanel gameBoardPanel, JFrame jFrame) {
         this.gameBoardPanel = gameBoardPanel;
-        this.player = gameLogic.getPlayer();
-        this.computer = gameLogic.getComputer();
         this.gameLogic = gameLogic;
-        setLayout(new FlowLayout());
-        restart = new JButton("Restart");
+//        setLayout(new FlowLayout());
+        setLayout(new BorderLayout());
+        JButton restart = new JButton("Restart");
         changeSize = new JComboBox();
-        currentPlayerInfo = new JLabel();
-        scoresLable = new JLabel();
+        JLabel currentPlayerInfo = new JLabel();
+        playerLabel = new JLabel();
+        var computerScore = new JLabel();
         setComboBox();
 
-        currentPlayerInfo.setText("Current player is " + player.getName().toLowerCase());
-        scoresLable.setText("Computer has: " + computer.getPlayerTokens().size()
-                + "    You have: " + player.getPlayerTokens().size());
+        currentPlayerInfo = gameLogic.getCurrentPlayerLabel();
+        playerLabel = gameLogic.getPlayerScore();
+        computerScore = gameLogic.getComputerScore();
 
-
-        add(restart);
-        add(new JSeparator());
-        add(changeSize);
-        add(new JSeparator());
-        add(currentPlayerInfo);
-        add(new JSeparator());
-        add(scoresLable);
+        add(restart, BorderLayout.SOUTH);
+//        add(new JSeparator());
+        add(changeSize, BorderLayout.WEST);
+//        add(new JSeparator());
+        add(currentPlayerInfo, BorderLayout.NORTH);
+//        add(new JSeparator());
+        add(playerLabel, BorderLayout.CENTER);
+//        add(new JSeparator());
+//        add(new JSeparator());
+        add(computerScore, BorderLayout.EAST);
 
         var actionListener = new ActionButtons(gameLogic, gameBoardPanel, jFrame, size, changeSize, restart);
         restart.addActionListener(actionListener);
