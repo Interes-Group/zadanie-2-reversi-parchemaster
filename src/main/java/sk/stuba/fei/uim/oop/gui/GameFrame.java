@@ -3,11 +3,12 @@ package sk.stuba.fei.uim.oop.gui;
 import lombok.Getter;
 import sk.stuba.fei.uim.oop.boadr.GameBoardPanel;
 import sk.stuba.fei.uim.oop.boadr.InformationPanel;
+import sk.stuba.fei.uim.oop.button.ColorChoseAction;
 import sk.stuba.fei.uim.oop.button.KeyButtonListener;
+import sk.stuba.fei.uim.oop.player.Player;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
 
 public class GameFrame extends JFrame {
 
@@ -25,8 +26,16 @@ public class GameFrame extends JFrame {
     private JDialog finishDialog = new JDialog(this, "Game is finished", true);
     @Getter
     private JLabel winnerName = new JLabel();
+    //TODO try = new KeyListener()
     @Getter
     private KeyButtonListener keyButtonListener;
+
+    @Getter
+    private JDialog colorDialog = new JDialog();
+    @Getter
+    private Player player;
+    @Getter
+    private Player computer;
 
 
 
@@ -41,9 +50,10 @@ public class GameFrame extends JFrame {
         this.setSize(600, 500);
         this.setLayout(new BorderLayout());
         this.gameBoardPanel = new GameBoardPanel(8);
-        gameLogic = new GameLogic(gameBoardPanel, playerScore, computerScore, currentPlayerLabel, finishDialog, winnerName);
+        gameLogic = new GameLogic(gameBoardPanel, playerScore, computerScore, currentPlayerLabel, finishDialog, winnerName, colorDialog, this);
         var informationPanel = new InformationPanel(gameLogic, gameBoardPanel, this, finishDialog);
 
+//        setDialogColor();
 
 //        keyButtonListener = new KeyButtonListener();
 //        addKeyListener(keyButtonListener);
@@ -53,7 +63,7 @@ public class GameFrame extends JFrame {
 
         setResizable(true);
         pack();
-        setVisible(true);
+//        setVisible(true);
     }
 
     public static void centreWindow(Window frame) {
@@ -62,4 +72,20 @@ public class GameFrame extends JFrame {
         int y = (int) ((dimension.getHeight() - frame.getHeight()) / 2);
         frame.setLocation(x, y);
     }
+
+//    private void setDialogColor() {
+//        colorDialog.setLayout(new BorderLayout());
+//        var blackButton = new JButton("Black");
+//        var whiteButton = new JButton("White");
+//        var colorChoseAction = new ColorChoseAction(blackButton, whiteButton, player, computer, gameLogic, this);
+//        blackButton.addActionListener(colorChoseAction);
+//        whiteButton.addActionListener(colorChoseAction);
+//        colorDialog.add(new JLabel("What color do you want to play?"), BorderLayout.NORTH);
+//        colorDialog.add(whiteButton, BorderLayout.WEST);
+//        colorDialog.add(blackButton, BorderLayout.EAST);
+//        colorDialog.setSize(300, 100);
+//        GameFrame.centreWindow(colorDialog);
+//        colorDialog.setVisible(true);
+//        setModal(true);
+//    }
 }

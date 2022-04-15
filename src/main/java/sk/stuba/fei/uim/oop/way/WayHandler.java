@@ -7,8 +7,6 @@ import java.util.stream.Collectors;
 
 public class WayHandler {
     private Way way;
-//    @Getter
-//    private ArrayList<Move> moves = new ArrayList<>();
     @Getter
     private ArrayList<Way> ways = new ArrayList<>();
 

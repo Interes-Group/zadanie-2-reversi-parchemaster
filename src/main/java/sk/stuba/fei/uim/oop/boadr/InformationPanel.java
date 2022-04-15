@@ -1,14 +1,11 @@
 package sk.stuba.fei.uim.oop.boadr;
 
 import sk.stuba.fei.uim.oop.button.ActionButtons;
-import sk.stuba.fei.uim.oop.button.KeyButtonListener;
 import sk.stuba.fei.uim.oop.gui.GameFrame;
 import sk.stuba.fei.uim.oop.gui.GameLogic;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 
 
 public class InformationPanel extends JPanel {
