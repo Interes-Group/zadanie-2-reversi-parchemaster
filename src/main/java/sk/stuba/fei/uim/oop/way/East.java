@@ -48,7 +48,6 @@ public class East extends Way implements Compass, CellFinder {
     @Override
     public ArrayList<Cell> flipTokens(Cell[][] allCells) {
         try {
-
             var allFlipTokens = new ArrayList<Cell>();
             var possibleTokens = new ArrayList<Cell>();
             for (int x = getCurrentToken().getPositionX() + 1; x < allCells.length; x++) {

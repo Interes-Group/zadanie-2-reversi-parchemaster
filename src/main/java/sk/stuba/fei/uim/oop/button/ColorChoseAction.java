@@ -2,7 +2,6 @@ package sk.stuba.fei.uim.oop.button;
 
 import lombok.Getter;
 import sk.stuba.fei.uim.oop.boadr.TokenColor;
-import sk.stuba.fei.uim.oop.gui.GameFrame;
 import sk.stuba.fei.uim.oop.gui.GameLogic;
 import sk.stuba.fei.uim.oop.player.Player;
 
@@ -10,15 +9,13 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 
 public class ColorChoseAction extends AbstractAction {
-    private JButton blackButton;
-    private JButton whiteButton;
-    private Player player;
-    private Player computer;
-//    @Getter
-//    private boolean isChosenColor = false;
+    private final JButton blackButton;
+    private final JButton whiteButton;
+    private final Player player;
+    private final Player computer;
     @Getter
-    private GameLogic gameLogic;
-    private JFrame frame;
+    private final GameLogic gameLogic;
+    private final JFrame frame;
 
     public ColorChoseAction(JButton blackButton, JButton whiteButton, Player player, Player computer, GameLogic gameLogic, JFrame frame) {
         this.gameLogic = gameLogic;

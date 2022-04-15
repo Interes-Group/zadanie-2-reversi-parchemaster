@@ -1,77 +1,51 @@
 package sk.stuba.fei.uim.oop.button;
 
 import sk.stuba.fei.uim.oop.boadr.GameBoardPanel;
+import sk.stuba.fei.uim.oop.boadr.InformationPanel;
 import sk.stuba.fei.uim.oop.gui.GameLogic;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.util.Objects;
 
-public class ActionButtons implements ActionListener, KeyListener {
+public class ActionButtons extends AbstractAction {
 
-    private JPanel gamePanel;
     private GameLogic gameLogic;
-    private JFrame frame;
+    private final JFrame frame;
     private int size;
     private GameBoardPanel gameBoardPanel;
-    private JComboBox changeSize;
-    private JButton restart;
+//    private final JComboBox changeSize;
+//    private final JButton restart;
+    private InformationPanel informationPanel;
 
-    public ActionButtons(GameLogic gameLogic, GameBoardPanel gameBoardPanel, JFrame frame, int size, JComboBox changeSize, JButton restart) {
+    public ActionButtons(GameLogic gameLogic, GameBoardPanel gameBoardPanel, JFrame frame, int size, InformationPanel informationPanel) {
         this.frame = frame;
-        this.restart = restart;
+//        this.restart = restart;
         this.gameBoardPanel = gameBoardPanel;
         this.gameLogic = gameLogic;
-        this.changeSize = changeSize;
+//        this.changeSize = changeSize;
+        this.informationPanel = informationPanel;
         this.size = size;
-        frame.addKeyListener(this);
+
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == changeSize) {
-            size = Integer.parseInt(changeSize.getSelectedItem().toString().split("x")[0]);
-            frame.remove(gameBoardPanel);
-            gameBoardPanel = new GameBoardPanel(size);
-            frame.add(gameBoardPanel);
-            SwingUtilities.updateComponentTreeUI(frame);
-            gameLogic = new GameLogic(gameBoardPanel, gameLogic.getPlayerScore(), gameLogic.getComputerScore(), gameLogic.getCurrentPlayerLabel(), gameLogic.getFinishDialog(), gameLogic.getWinnerLabel(), frame);
-            gameLogic.createColorButtons();
+        if (e.getSource() == informationPanel.getChangeSize()) {
+            size = Integer.parseInt(Objects.requireNonNull(informationPanel.getChangeSize().getSelectedItem()).toString().split("x")[0]);
+            informationPanel.getInfoSizeBoard().setText("Size of the board is " + size + "x" + size);
         }
-        if (e.getSource() == restart) {
-            size = 8;
-            frame.remove(gameBoardPanel);
-            gameBoardPanel = new GameBoardPanel(size);
-            frame.add(gameBoardPanel);
-            SwingUtilities.updateComponentTreeUI(frame);
-            gameLogic = new GameLogic(gameBoardPanel, gameLogic.getPlayerScore(), gameLogic.getComputerScore(), gameLogic.getCurrentPlayerLabel(), gameLogic.getFinishDialog(), gameLogic.getWinnerLabel(), frame);
-            gameLogic.createColorButtons();
-        }
-    }
-
-    @Override
-    public void keyTyped(KeyEvent e) {
-
-    }
-
-    @Override
-    public void keyPressed(KeyEvent e) {
-        if (e.getKeyChar() == 'r') {
-            size = 8;
-            frame.remove(gameBoardPanel);
-            gameBoardPanel = new GameBoardPanel(size);
-            frame.add(gameBoardPanel);
-            SwingUtilities.updateComponentTreeUI(frame);
-            gameLogic = new GameLogic(gameBoardPanel, gameLogic.getPlayerScore(), gameLogic.getComputerScore(), gameLogic.getCurrentPlayerLabel(), gameLogic.getFinishDialog(), gameLogic.getWinnerLabel(), frame);
-            gameLogic.createColorButtons();
-        }
-    }
-
-    @Override
-    public void keyReleased(KeyEvent e) {
-
+        frame.remove(gameBoardPanel);
+        gameBoardPanel = new GameBoardPanel(size);
+        frame.add(gameBoardPanel);
+        SwingUtilities.updateComponentTreeUI(frame);
+        gameLogic = new GameLogic(gameBoardPanel,
+                gameLogic.getPlayerScore(),
+                gameLogic.getComputerScore(),
+                gameLogic.getCurrentPlayerLabel(),
+                gameLogic.getFinishDialog(),
+                gameLogic.getWinnerLabel(),
+                frame);
+        gameLogic.createColorButtons();
     }
 }

@@ -13,52 +13,42 @@ import sk.stuba.fei.uim.oop.way.WayHandler;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.*;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class GameLogic {
 
     @Getter
-    @Setter
     private int boardSize;
     @Getter
-    @Setter
     private GameBoardPanel gameBoardPanel;
     @Getter
-    @Setter
     private InformationPanel informationPanel;
     @Getter
     @Setter
     private int round;
-
     @Getter
     private Player player;
     @Getter
     private Player computer;
-
     @Getter
     @Setter
     private ArrayList<Cell> possibleCells = new ArrayList<>();
-
     @Getter
     @Setter
     private boolean isNewRound;
-
     @Getter
     @Setter
     private ArrayList<HashMap<Cell, ArrayList<Cell>>> possibleWaysToMove;
-
-
     @Getter
     @Setter
     private Player currentPlayer;
     @Getter
     @Setter
     private Player opponentPlayer;
-
     @Getter
     private JLabel playerScore;
     @Getter
@@ -80,17 +70,9 @@ public class GameLogic {
     public GameLogic(GameBoardPanel gameBoardPanel, JLabel playerScore, JLabel computerScore, JLabel currentPlayerLabel, JDialog finishDialog, JLabel winnerName, JFrame frame) {
         this.gameBoardPanel = gameBoardPanel;
         this.winnerLabel = winnerName;
-        //WHITE
         this.player = new Player(new ArrayList<Cell>(), TokenColor.NOT_SPECIFIED, "You");
-        //BLACK
         this.computer = new Player(new ArrayList<Cell>(), TokenColor.NOT_SPECIFIED, "Computer");
         this.frame = frame;
-
-
-
-//        player.setPlayerColor(TokenColor.BLACK);
-//        computer.setPlayerColor(TokenColor.WHITE);
-
 
         this.playerScore = playerScore;
         playerScore.setText("Player has: " + getPlayer().getPlayerTokens().size());
@@ -99,20 +81,10 @@ public class GameLogic {
         computerScore.setText("Computer has " + getComputer().getPlayerTokens().size());
 
         this.currentPlayerLabel = currentPlayerLabel;
-
         this.finishDialog = finishDialog;
-
-
-
-//        frame.setVisible(true);
-//        initializeGame();
-
-//        ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
-//        executor.scheduleAtFixedRate(helloRunnable, 0, 1, TimeUnit.SECONDS);
     }
 
     public void createColorButtons() {
-        // TODO create somehow chose color dialog before start of the game
         colorDialog.setLayout(new BorderLayout());
         var blackButton = new JButton("Black");
         var whiteButton = new JButton("White");
@@ -126,7 +98,6 @@ public class GameLogic {
         GameFrame.centreWindow(colorDialog);
         colorDialog.setModal(true);
         colorDialog.setVisible(true);
-
         initializeGame();
     }
 
@@ -137,19 +108,6 @@ public class GameLogic {
             }
         }
     }
-
-//    private void choseColor() {
-//        colorDialog.setLayout(new BorderLayout());
-//        var blackButton = new JButton("Black");
-//        var whiteButton = new JButton("White");
-//        var colorChoseAction = new ColorChoseAction(blackButton, whiteButton, player, computer);
-//        blackButton.addActionListener(colorChoseAction);
-//        colorDialog.add(new JLabel("What color do you want to play?"), BorderLayout.NORTH);
-//        colorDialog.add(whiteButton, BorderLayout.WEST);
-//        colorDialog.add(blackButton, BorderLayout.EAST);
-//        colorDialog.setSize(300, 100);
-//        colorDialog.setVisible(true);
-//    }
 
 
     public void initializeGame() {
@@ -163,7 +121,7 @@ public class GameLogic {
     private void changePlayers() {
         currentPlayer = round % 2 == 0 ? player : computer;
         opponentPlayer = round % 2 == 1 ? player : computer;
-        currentPlayerLabel.setText("Current player is: " + currentPlayer.getName() + " with color: " + currentPlayer.getPlayerColor());
+        currentPlayerLabel.setText("Current player is: " + currentPlayer.getName());
         round++;
     }
 
@@ -172,9 +130,10 @@ public class GameLogic {
         setHighlightedCells();
         isNewRound = false;
         checkFinishGame();
-        //TODO there
+        // there is computer starts, if you want to play player : player, just comment the 135 line
         if (currentPlayer.equals(computer)) computerMove();
     }
+
 
     public String findWinner() {
         String winnerString;
@@ -208,8 +167,7 @@ public class GameLogic {
     private void findTheClosestCellsNearToCurrentPlayer() {
         for (var currentPlayerToken : currentPlayer.getPlayerTokens()) {
             var listOfWays = findListOfWays(opponentPlayer, currentPlayerToken);
-            //TODO if listOfWays == null => finish the game
-            possibleCells.addAll(findTheEndOfWayForSpecificToken(listOfWays));
+            possibleCells.addAll(findTheEndOfWayForSpecificToken(Objects.requireNonNull(listOfWays)));
         }
         possibleCells = possibleCells.stream().distinct().collect(Collectors.toCollection(ArrayList::new));
     }
@@ -237,14 +195,6 @@ public class GameLogic {
         }
     }
 
-    // waiting till current player press any possible cell
-//    Runnable helloRunnable = new Runnable() {
-//        public void run() {
-//            checkIsClicked();
-//        }
-//    };
-
-
     // if current player press possible cell then flip opponents tokens
     public void checkIsClicked() {
         if (possibleCells.stream().anyMatch(Cell::isClicked)) {
@@ -254,8 +204,8 @@ public class GameLogic {
             removeHighlightedCells();
             flipToOpponentTokens(newToken);
             changePlayers();
-            playerScore.setText("Player has: " + getPlayer().getPlayerTokens().size());
-            computerScore.setText("Computer has " + getComputer().getPlayerTokens().size());
+            playerScore.setText("Player has: " + getPlayer().getPlayerTokens().size() + " " + getPlayer().getPlayerColor() + " tokens");
+            computerScore.setText("Computer has " + getComputer().getPlayerTokens().size() + " " + getPlayer().getPlayerColor() + " tokens");
             start();
         }
     }
@@ -292,7 +242,6 @@ public class GameLogic {
 
     private ArrayList<Way> findListOfWays(Player opponentPlayer, Cell currentPlayerToken) {
         try {
-
             var wayHandler = new WayHandler();
             for (var opponentPlayerToken : opponentPlayer.getPlayerTokens()) {
                 var newWay = new Way(
@@ -317,9 +266,9 @@ public class GameLogic {
         return allFlipTokens;
     }
 
+    // finds the most suitable position for new token
     private void computerMove() {
         var allPossibleOpponentFlipWay = new ArrayList<ArrayList<Cell>>();
-        // find the longest possible way to flip opponent tokens
         for (var possibleCell : possibleCells) {
             possibleCell.setTokenColor(computer.getPlayerColor());
             allPossibleOpponentFlipWay.add(findOpponentTokens(possibleCell));
@@ -327,9 +276,6 @@ public class GameLogic {
         }
         var testList = allPossibleOpponentFlipWay.stream().max(Comparator.comparingInt(ArrayList::size)).get();
         var index = allPossibleOpponentFlipWay.indexOf(testList);
-//        for (var cell : testList) {
-//            cell.setTokenColor(computer.getPlayerColor());
-//        }
         possibleCells.get(index).setTokenColor(computer.getPlayerColor());
         possibleCells.get(index).setClicked(true);
         checkIsClicked();

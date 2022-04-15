@@ -1,34 +1,38 @@
 package sk.stuba.fei.uim.oop.boadr;
 
+import lombok.Getter;
+import lombok.Setter;
 import sk.stuba.fei.uim.oop.button.ActionButtons;
+
+import sk.stuba.fei.uim.oop.button.Escape;
 import sk.stuba.fei.uim.oop.gui.GameFrame;
 import sk.stuba.fei.uim.oop.gui.GameLogic;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyEvent;
 
 
 public class InformationPanel extends JPanel {
-    private JComboBox changeSize;
-    private JLabel playerLabel;
-    private GameLogic gameLogic;
-    private int size = 8;
-    private GameBoardPanel gameBoardPanel;
-
-
+    @Getter
+    private final JComboBox changeSize;
+    @Getter
+    private final JButton restart;
+    @Getter
+    private final ActionButtons actionListener;
+    @Getter
+    @Setter
+    private JLabel infoSizeBoard = new JLabel();
 
     public InformationPanel(GameLogic gameLogic, GameBoardPanel gameBoardPanel, JFrame jFrame, JDialog finishDialog) {
-        this.gameBoardPanel = gameBoardPanel;
-        this.gameLogic = gameLogic;
-        setLayout(new GridLayout(5, 1, 1, 1));
-        JButton restart = new JButton("Restart");
+        setLayout(new GridLayout(6, 1, 1, 1));
+        restart = new JButton("Restart");
         changeSize = new JComboBox();
         JLabel currentPlayerInfo = new JLabel();
-        playerLabel = new JLabel();
+        JLabel playerLabel = new JLabel();
         var computerScore = new JLabel();
         setComboBox();
 
-        // wining window
         var winnerLabel = new JLabel();
         winnerLabel = gameLogic.getWinnerLabel();
 
@@ -38,11 +42,9 @@ public class InformationPanel extends JPanel {
         finishDialog.add(winnerPanel, BorderLayout.CENTER);
         finishDialog.setSize(300, 100);
         GameFrame.centreWindow(finishDialog);
-        //
 
-
-        // key listener
-//        var keyButtonListener = new KeyButtonListener(this);
+        int size = 6;
+        this.infoSizeBoard.setText("Size of the board is " + size + "x" + size);
 
         currentPlayerInfo = gameLogic.getCurrentPlayerLabel();
         playerLabel = gameLogic.getPlayerScore();
@@ -51,13 +53,25 @@ public class InformationPanel extends JPanel {
         add(currentPlayerInfo);
         add(playerLabel);
         add(computerScore);
+        add(infoSizeBoard);
         add(restart);
         add(changeSize);
 
-        var actionListener = new ActionButtons(gameLogic, gameBoardPanel, jFrame, size, changeSize, restart);
+        var escListener = new Escape(jFrame);
+        actionListener = new ActionButtons(gameLogic, gameBoardPanel, jFrame, size, this);
         restart.addActionListener(actionListener);
         changeSize.addActionListener(actionListener);
+        ((JLabel)changeSize.getRenderer()).setHorizontalAlignment(SwingConstants.CENTER);
 
+        // restart button R
+        restart.getInputMap(javax.swing.JComponent.WHEN_IN_FOCUSED_WINDOW).
+                put(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_R,0), "R_pressed");
+        restart.getActionMap().put("R_pressed", actionListener);
+
+        // escape button esc
+        jFrame.getRootPane().registerKeyboardAction(escListener,
+                KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0),
+                JComponent.WHEN_IN_FOCUSED_WINDOW);
     }
 
     private void setComboBox() {

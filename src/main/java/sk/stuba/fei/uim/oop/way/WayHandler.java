@@ -1,9 +1,7 @@
 package sk.stuba.fei.uim.oop.way;
 
 import lombok.Getter;
-
 import java.util.ArrayList;
-import java.util.stream.Collectors;
 
 public class WayHandler {
     private Way way;
@@ -19,7 +17,6 @@ public class WayHandler {
     }
 
     private void getAcceptableWays() {
-//        moves.addAll(allPossibleWays.stream().filter(Way::checkWay).map(Way::getMove).collect(Collectors.toList()));
         for (var way : createListOfPossibleWays()) {
             if (way.checkWay()) {
                 ways.add(way);

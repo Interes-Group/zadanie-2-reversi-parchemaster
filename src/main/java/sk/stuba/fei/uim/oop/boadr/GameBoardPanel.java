@@ -1,14 +1,9 @@
 package sk.stuba.fei.uim.oop.boadr;
 
 import lombok.Getter;
-import lombok.Setter;
-import sk.stuba.fei.uim.oop.gui.GameLogic;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 
 public class GameBoardPanel extends JPanel {
 
