@@ -14,16 +14,12 @@ public class ActionButtons extends AbstractAction {
     private final JFrame frame;
     private int size;
     private GameBoardPanel gameBoardPanel;
-//    private final JComboBox changeSize;
-//    private final JButton restart;
-    private InformationPanel informationPanel;
+    private final InformationPanel informationPanel;
 
     public ActionButtons(GameLogic gameLogic, GameBoardPanel gameBoardPanel, JFrame frame, int size, InformationPanel informationPanel) {
         this.frame = frame;
-//        this.restart = restart;
         this.gameBoardPanel = gameBoardPanel;
         this.gameLogic = gameLogic;
-//        this.changeSize = changeSize;
         this.informationPanel = informationPanel;
         this.size = size;
 

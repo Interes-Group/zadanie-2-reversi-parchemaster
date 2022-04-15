@@ -3,7 +3,6 @@ package sk.stuba.fei.uim.oop.gui;
 import lombok.Getter;
 import sk.stuba.fei.uim.oop.boadr.GameBoardPanel;
 import sk.stuba.fei.uim.oop.boadr.InformationPanel;
-import sk.stuba.fei.uim.oop.player.Player;
 
 import javax.swing.*;
 import java.awt.*;

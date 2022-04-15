@@ -70,8 +70,8 @@ public class GameLogic {
     public GameLogic(GameBoardPanel gameBoardPanel, JLabel playerScore, JLabel computerScore, JLabel currentPlayerLabel, JDialog finishDialog, JLabel winnerName, JFrame frame) {
         this.gameBoardPanel = gameBoardPanel;
         this.winnerLabel = winnerName;
-        this.player = new Player(new ArrayList<Cell>(), TokenColor.NOT_SPECIFIED, "You");
-        this.computer = new Player(new ArrayList<Cell>(), TokenColor.NOT_SPECIFIED, "Computer");
+        this.player = new Player(new ArrayList<>(), TokenColor.NOT_SPECIFIED, "You");
+        this.computer = new Player(new ArrayList<>(), TokenColor.NOT_SPECIFIED, "Computer");
         this.frame = frame;
 
         this.playerScore = playerScore;
@@ -150,15 +150,15 @@ public class GameLogic {
     }
 
     private void findPlayersTokens() {
-        for (int y = 0; y < allCells.length; y++) {
+        for (Cell[] allCell : allCells) {
             for (int x = 0; x < allCells.length; x++) {
-                if (allCells[y][x].getTokenColor() == currentPlayer.getPlayerColor()
-                        && !currentPlayer.getPlayerTokens().contains(allCells[y][x])) {
-                    currentPlayer.getPlayerTokens().add(allCells[y][x]);
+                if (allCell[x].getTokenColor() == currentPlayer.getPlayerColor()
+                        && !currentPlayer.getPlayerTokens().contains(allCell[x])) {
+                    currentPlayer.getPlayerTokens().add(allCell[x]);
                 }
-                if (allCells[y][x].getTokenColor() == opponentPlayer.getPlayerColor()
-                        && !opponentPlayer.getPlayerTokens().contains(allCells[y][x])) {
-                    opponentPlayer.getPlayerTokens().add(allCells[y][x]);
+                if (allCell[x].getTokenColor() == opponentPlayer.getPlayerColor()
+                        && !opponentPlayer.getPlayerTokens().contains(allCell[x])) {
+                    opponentPlayer.getPlayerTokens().add(allCell[x]);
                 }
             }
         }
@@ -236,8 +236,7 @@ public class GameLogic {
 
     private ArrayList<Cell> findOpponentTokens(Cell selectedNewToken) {
         var listOfWays = findListOfWays(opponentPlayer, selectedNewToken);
-        var newFlipTokens = flipOpponentsTokensLogic(listOfWays);
-        return newFlipTokens;
+        return flipOpponentsTokensLogic(Objects.requireNonNull(listOfWays));
     }
 
     private ArrayList<Way> findListOfWays(Player opponentPlayer, Cell currentPlayerToken) {

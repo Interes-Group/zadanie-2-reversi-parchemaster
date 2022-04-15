@@ -5,7 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class Escape implements ActionListener {
-    private JFrame frame;
+    private final JFrame frame;
 
     public Escape(JFrame frame) {
         this.frame = frame;
