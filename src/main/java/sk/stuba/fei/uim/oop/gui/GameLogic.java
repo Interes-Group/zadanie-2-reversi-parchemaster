@@ -88,8 +88,8 @@ public class GameLogic {
 
 
 
-        player.setPlayerColor(TokenColor.BLACK);
-        computer.setPlayerColor(TokenColor.WHITE);
+//        player.setPlayerColor(TokenColor.BLACK);
+//        computer.setPlayerColor(TokenColor.WHITE);
 
 
         this.playerScore = playerScore;
@@ -103,8 +103,9 @@ public class GameLogic {
         this.finishDialog = finishDialog;
 
 
-        frame.setVisible(true);
-        initializeGame();
+
+//        frame.setVisible(true);
+//        initializeGame();
 
 //        ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
 //        executor.scheduleAtFixedRate(helloRunnable, 0, 1, TimeUnit.SECONDS);
@@ -125,6 +126,8 @@ public class GameLogic {
         GameFrame.centreWindow(colorDialog);
         colorDialog.setModal(true);
         colorDialog.setVisible(true);
+
+        initializeGame();
     }
 
     private void putLogicToCell() {

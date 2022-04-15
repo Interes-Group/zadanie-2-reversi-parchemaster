@@ -35,6 +35,7 @@ public class ActionButtons implements ActionListener {
             frame.add(gameBoardPanel);
             SwingUtilities.updateComponentTreeUI(frame);
             gameLogic = new GameLogic(gameBoardPanel, gameLogic.getPlayerScore(), gameLogic.getComputerScore(), gameLogic.getCurrentPlayerLabel(), gameLogic.getFinishDialog(), gameLogic.getWinnerLabel(), frame);
+            gameLogic.createColorButtons();
         }
         if (e.getSource() == restart) {
             size = 8;
@@ -43,6 +44,7 @@ public class ActionButtons implements ActionListener {
             frame.add(gameBoardPanel);
             SwingUtilities.updateComponentTreeUI(frame);
             gameLogic = new GameLogic(gameBoardPanel, gameLogic.getPlayerScore(), gameLogic.getComputerScore(), gameLogic.getCurrentPlayerLabel(), gameLogic.getFinishDialog(), gameLogic.getWinnerLabel(), frame);
+            gameLogic.createColorButtons();
         }
     }
 }

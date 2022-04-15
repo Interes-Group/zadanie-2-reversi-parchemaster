@@ -55,6 +55,7 @@ public class GameFrame extends JFrame {
 
 //        gameLogic.createColorButtons();
 //
+        gameLogic.createColorButtons();
 //        keyButtonListener = new KeyButtonListener();
 //        addKeyListener(keyButtonListener);
 
