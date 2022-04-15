@@ -70,21 +70,47 @@ public class GameLogic {
     @Getter
     private JLabel winnerLabel;
     @Getter
-    private JDialog colorDialog;
+    private JFrame frame;
+    @Getter
+    private JDialog colorDialog = new JDialog();
 
 
     private Cell[][] allCells;
 
-    public GameLogic(GameBoardPanel gameBoardPanel, JLabel playerScore, JLabel computerScore, JLabel currentPlayerLabel, JDialog finishDialog, JLabel winnerName, JDialog colorDialog, JFrame frame) {
+    public GameLogic(GameBoardPanel gameBoardPanel, JLabel playerScore, JLabel computerScore, JLabel currentPlayerLabel, JDialog finishDialog, JLabel winnerName, JFrame frame) {
         this.gameBoardPanel = gameBoardPanel;
-        this.colorDialog = colorDialog;
         this.winnerLabel = winnerName;
         //WHITE
         this.player = new Player(new ArrayList<Cell>(), TokenColor.NOT_SPECIFIED, "You");
         //BLACK
         this.computer = new Player(new ArrayList<Cell>(), TokenColor.NOT_SPECIFIED, "Computer");
+        this.frame = frame;
 
 
+
+        player.setPlayerColor(TokenColor.BLACK);
+        computer.setPlayerColor(TokenColor.WHITE);
+
+
+        this.playerScore = playerScore;
+        playerScore.setText("Player has: " + getPlayer().getPlayerTokens().size());
+
+        this.computerScore = computerScore;
+        computerScore.setText("Computer has " + getComputer().getPlayerTokens().size());
+
+        this.currentPlayerLabel = currentPlayerLabel;
+
+        this.finishDialog = finishDialog;
+
+
+        frame.setVisible(true);
+        initializeGame();
+
+//        ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
+//        executor.scheduleAtFixedRate(helloRunnable, 0, 1, TimeUnit.SECONDS);
+    }
+
+    public void createColorButtons() {
         // TODO create somehow chose color dialog before start of the game
         colorDialog.setLayout(new BorderLayout());
         var blackButton = new JButton("Black");
@@ -99,24 +125,14 @@ public class GameLogic {
         GameFrame.centreWindow(colorDialog);
         colorDialog.setModal(true);
         colorDialog.setVisible(true);
+    }
 
-
-
-        this.playerScore = playerScore;
-        playerScore.setText("Player has: " + getPlayer().getPlayerTokens().size());
-
-        this.computerScore = computerScore;
-        computerScore.setText("Computer has " + getComputer().getPlayerTokens().size());
-
-        this.currentPlayerLabel = currentPlayerLabel;
-
-        this.finishDialog = finishDialog;
-
-
-        initializeGame();
-
-        ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
-        executor.scheduleAtFixedRate(helloRunnable, 0, 1, TimeUnit.SECONDS);
+    private void putLogicToCell() {
+        for (var cellList : allCells) {
+            for (var cell : cellList) {
+                cell.setGameLogic(this);
+            }
+        }
     }
 
 //    private void choseColor() {
@@ -135,6 +151,7 @@ public class GameLogic {
 
     public void initializeGame() {
         this.allCells = gameBoardPanel.getAllCells();
+        putLogicToCell();
         changePlayers();
         findPlayersTokens();
         start();
@@ -153,7 +170,7 @@ public class GameLogic {
         isNewRound = false;
         checkFinishGame();
         //TODO there
-//        if (currentPlayer.equals(computer)) computerMove();
+        if (currentPlayer.equals(computer)) computerMove();
     }
 
     public String findWinner() {
@@ -218,14 +235,15 @@ public class GameLogic {
     }
 
     // waiting till current player press any possible cell
-    Runnable helloRunnable = new Runnable() {
-        public void run() {
-            checkIsClicked();
-        }
-    };
+//    Runnable helloRunnable = new Runnable() {
+//        public void run() {
+//            checkIsClicked();
+//        }
+//    };
+
 
     // if current player press possible cell then flip opponents tokens
-    private void checkIsClicked() {
+    public void checkIsClicked() {
         if (possibleCells.stream().anyMatch(Cell::isClicked)) {
             specifyLostColors();
             var newToken = possibleCells.stream().filter(Cell::isClicked).findFirst().get();
@@ -241,8 +259,8 @@ public class GameLogic {
 
     // some tokens lost their TokenColor wile program waiting, so this function specify lost tokens colors
     private void specifyLostColors() {
-        player.getPlayerTokens().forEach(token -> token.setTokenColor(TokenColor.WHITE));
-        computer.getPlayerTokens().forEach(token -> token.setTokenColor(TokenColor.BLACK));
+        player.getPlayerTokens().forEach(token -> token.setTokenColor(player.getPlayerColor()));
+        computer.getPlayerTokens().forEach(token -> token.setTokenColor(computer.getPlayerColor()));
     }
 
     private void removeHighlightedCells() {
@@ -264,8 +282,8 @@ public class GameLogic {
     }
 
     private ArrayList<Cell> findOpponentTokens(Cell selectedNewToken) {
-        var listOfMoves = findListOfWays(opponentPlayer, selectedNewToken);
-        var newFlipTokens = flipOpponentsTokensLogic(listOfMoves);
+        var listOfWays = findListOfWays(opponentPlayer, selectedNewToken);
+        var newFlipTokens = flipOpponentsTokensLogic(listOfWays);
         return newFlipTokens;
     }
 
@@ -306,10 +324,11 @@ public class GameLogic {
         }
         var testList = allPossibleOpponentFlipWay.stream().max(Comparator.comparingInt(ArrayList::size)).get();
         var index = allPossibleOpponentFlipWay.indexOf(testList);
-        for (var cell : testList) {
-            cell.setTokenColor(computer.getPlayerColor());
-        }
+//        for (var cell : testList) {
+//            cell.setTokenColor(computer.getPlayerColor());
+//        }
         possibleCells.get(index).setTokenColor(computer.getPlayerColor());
         possibleCells.get(index).setClicked(true);
+        checkIsClicked();
     }
 }

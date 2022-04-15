@@ -31,8 +31,6 @@ public class GameFrame extends JFrame {
     private KeyButtonListener keyButtonListener;
 
     @Getter
-    private JDialog colorDialog = new JDialog();
-    @Getter
     private Player player;
     @Getter
     private Player computer;
@@ -47,14 +45,16 @@ public class GameFrame extends JFrame {
         int y = (int) ((dimension.getHeight() - getHeight()) / 4);
         setLocation(x, y);
 
+
+//        setDialogColor();
         this.setSize(600, 500);
         this.setLayout(new BorderLayout());
         this.gameBoardPanel = new GameBoardPanel(8);
-        gameLogic = new GameLogic(gameBoardPanel, playerScore, computerScore, currentPlayerLabel, finishDialog, winnerName, colorDialog, this);
+        gameLogic = new GameLogic(gameBoardPanel, playerScore, computerScore, currentPlayerLabel, finishDialog, winnerName, this);
         var informationPanel = new InformationPanel(gameLogic, gameBoardPanel, this, finishDialog);
 
-//        setDialogColor();
-
+//        gameLogic.createColorButtons();
+//
 //        keyButtonListener = new KeyButtonListener();
 //        addKeyListener(keyButtonListener);
 
@@ -85,7 +85,7 @@ public class GameFrame extends JFrame {
 //        colorDialog.add(blackButton, BorderLayout.EAST);
 //        colorDialog.setSize(300, 100);
 //        GameFrame.centreWindow(colorDialog);
+//        colorDialog.setModal(true);
 //        colorDialog.setVisible(true);
-//        setModal(true);
 //    }
 }

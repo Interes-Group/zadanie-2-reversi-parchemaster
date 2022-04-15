@@ -34,7 +34,7 @@ public class ActionButtons implements ActionListener {
             gameBoardPanel = new GameBoardPanel(size);
             frame.add(gameBoardPanel);
             SwingUtilities.updateComponentTreeUI(frame);
-            gameLogic = new GameLogic(gameBoardPanel, gameLogic.getPlayerScore(), gameLogic.getComputerScore(), gameLogic.getCurrentPlayerLabel(), gameLogic.getFinishDialog(), gameLogic.getWinnerLabel(), gameLogic.getColorDialog(), frame);
+            gameLogic = new GameLogic(gameBoardPanel, gameLogic.getPlayerScore(), gameLogic.getComputerScore(), gameLogic.getCurrentPlayerLabel(), gameLogic.getFinishDialog(), gameLogic.getWinnerLabel(), frame);
         }
         if (e.getSource() == restart) {
             size = 8;
@@ -42,7 +42,7 @@ public class ActionButtons implements ActionListener {
             gameBoardPanel = new GameBoardPanel(size);
             frame.add(gameBoardPanel);
             SwingUtilities.updateComponentTreeUI(frame);
-            gameLogic = new GameLogic(gameBoardPanel, gameLogic.getPlayerScore(), gameLogic.getComputerScore(), gameLogic.getCurrentPlayerLabel(), gameLogic.getFinishDialog(), gameLogic.getWinnerLabel(), gameLogic.getColorDialog(), frame);
+            gameLogic = new GameLogic(gameBoardPanel, gameLogic.getPlayerScore(), gameLogic.getComputerScore(), gameLogic.getCurrentPlayerLabel(), gameLogic.getFinishDialog(), gameLogic.getWinnerLabel(), frame);
         }
     }
 }

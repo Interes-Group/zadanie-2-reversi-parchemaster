@@ -3,6 +3,7 @@ package sk.stuba.fei.uim.oop.boadr;
 import lombok.Getter;
 import lombok.Setter;
 import sk.stuba.fei.uim.oop.controls.CellHandler;
+import sk.stuba.fei.uim.oop.gui.GameLogic;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -42,6 +43,9 @@ public class Cell extends JPanel implements MouseListener, Painter {
     @Setter
     private TokenColor possibleTokenColor = NOT_SPECIFIED;
 
+    @Setter
+    private GameLogic gameLogic;
+
 
 
 
@@ -80,6 +84,7 @@ public class Cell extends JPanel implements MouseListener, Painter {
 //            isPossibleToPaint = true;
             isClicked = true;
             tokenColor = getPossibleTokenColor();
+            gameLogic.checkIsClicked();
         }
     }
 
