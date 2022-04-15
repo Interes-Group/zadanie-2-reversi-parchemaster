@@ -9,6 +9,9 @@ import sk.stuba.fei.uim.oop.player.Player;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 public class GameFrame extends JFrame {
 
@@ -59,6 +62,17 @@ public class GameFrame extends JFrame {
 //        keyButtonListener = new KeyButtonListener();
 //        addKeyListener(keyButtonListener);
 
+//        KeyboardFocusManager.getCurrentKeyboardFocusManager()
+//                .addKeyEventDispatcher(new KeyEventDispatcher() {
+//                    @Override
+//                    public boolean dispatchKeyEvent(KeyEvent e) {
+//                        System.out.println(e.getKeyChar());
+//                        informationPanel.
+//                        return false;
+//                    }
+//                });
+
+
         this.add(gameBoardPanel, BorderLayout.NORTH);
         this.add(informationPanel, BorderLayout.SOUTH);
 
@@ -66,6 +80,8 @@ public class GameFrame extends JFrame {
         pack();
 //        setVisible(true);
     }
+
+
 
     public static void centreWindow(Window frame) {
         Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
